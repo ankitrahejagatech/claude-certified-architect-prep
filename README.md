@@ -113,6 +113,7 @@ Don't waste time on any of it.
 | aderegil: guided labs | 6 scenarios, 5 domains, 30 hands-on tasks in Python. Closest thing to the actual exam's production setup | [github.com/aderegil/claude-certified-architect](https://github.com/aderegil/claude-certified-architect) |
 | mominurr: mock exam | 60 questions, 120-min timer, per-domain performance analytics | [github.com/mominurr/cca-f-mock-exam](https://github.com/mominurr/cca-f-mock-exam) |
 | SpillwaveSolutions: Jupyter notebooks | 9 notebooks, 234 tests, architectural patterns by scenario | [github.com/SpillwaveSolutions/cca-exam-prep-customer-support](https://github.com/SpillwaveSolutions/cca-exam-prep-customer-support) |
+| CCA Prep: study guide + flashcards | Full study guide across all 5 domains, plus cheat sheet, quiz, mock exam, and flashcards. Free | [claudecertprep.com](https://claudecertprep.com) |
 | Anthropic official | Skilljar courses + exam registration | [anthropic.skilljar.com](https://anthropic.skilljar.com) |
 
 ---
