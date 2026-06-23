@@ -4,6 +4,8 @@ Practice kit for Anthropic's Claude Certified Architect: Foundations exam. Conte
 
 Pass score: **720 / 1000.** Scenario-based. Tests architectural judgment under production constraints — not API memorization.
 
+**▶ [Launch the practice exam](https://ankitrahejagatech.github.io/claude-certified-architect-prep/practice-exam.html)** — runs in your browser, nothing to install.
+
 ---
 
 ## What's in here
