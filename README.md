@@ -20,7 +20,7 @@ What you'll actually be able to do after passing:
 4. **Evaluate AI vendors without getting played.** You'll recognize when a vendor is describing probabilistic behavior (prompts) as if it were guaranteed behavior (hooks).
 5. **Hold your ground in technical design reviews.** Knowing the architecture means you can push back when a proposed design is fragile - not just defer to the team.
 
-The cert takes a day to prep if you use this kit. The signal it sends is disproportionate to the effort.
+The cert takes about 2 weeks to prep if you use this kit. The signal it sends is disproportionate to the effort.
 
 ---
 
