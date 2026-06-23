@@ -1,0 +1,5 @@
+# Anthropic exam guide PDF — copyrighted, not for redistribution
+*.pdf
+
+# Local dev config
+.claude/

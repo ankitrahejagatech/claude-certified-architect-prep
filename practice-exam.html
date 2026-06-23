@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Certified Architect — Practice Exam</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --bg: #0e0e10;
+  --surface: #18181b;
+  --card: #ffffff;
+  --border: #e4e4e7;
+  --text: #18181b;
+  --muted: #71717a;
+  --d1: #6366f1; --d1-light: #eef2ff;
+  --d2: #0891b2; --d2-light: #ecfeff;
+  --d3: #059669; --d3-light: #ecfdf5;
+  --d4: #d97706; --d4-light: #fffbeb;
+  --d5: #dc2626; --d5-light: #fef2f2;
+  --correct: #16a34a; --correct-bg: #dcfce7; --correct-border: #86efac;
+  --wrong: #dc2626; --wrong-bg: #fee2e2; --wrong-border: #fca5a5;
+  --pass: #16a34a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: var(--text); min-height: 100vh; }
+#app { min-height: 100vh; display: flex; flex-direction: column; }
+
+/* LAYOUT */
+.screen { max-width: 800px; margin: 0 auto; padding: 24px 16px 80px; width: 100%; }
+.screen-wide { max-width: 900px; }
+
+/* CARDS */
+.card { background: var(--card); border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.card + .card { margin-top: 16px; }
+
+/* DOMAIN BADGE */
+.domain-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; padding: 4px 10px; border-radius: 99px; }
+
+/* PROGRESS */
+.progress-bar { height: 4px; border-radius: 2px; background: #27272a; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 2px; transition: width .3s; }
+.progress-header { background: var(--surface); padding: 12px 20px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 10; }
+.progress-label { font-size: 12px; color: #a1a1aa; white-space: nowrap; min-width: 80px; }
+
+/* BUTTONS */
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-size: 15px; font-weight: 600; transition: all .15s; text-decoration: none; }
+.btn-primary { background: #6366f1; color: #fff; }
+.btn-primary:hover { background: #4f46e5; }
+.btn-outline { background: transparent; color: #6366f1; border: 2px solid #6366f1; }
+.btn-outline:hover { background: #eef2ff; }
+.btn-sm { padding: 8px 16px; font-size: 13px; }
+.btn-ghost { background: transparent; color: var(--muted); }
+.btn-ghost:hover { color: var(--text); }
+
+/* START SCREEN */
+.hero { text-align: center; padding: 48px 0 32px; }
+.hero h1 { font-size: 32px; font-weight: 800; color: #fff; letter-spacing: -.02em; }
+.hero p { color: #a1a1aa; margin-top: 8px; font-size: 16px; }
+.hero .badge { display: inline-flex; align-items: center; gap: 6px; background: #27272a; color: #a1a1aa; font-size: 12px; padding: 4px 12px; border-radius: 99px; margin-bottom: 16px; }
+.domain-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 24px 0; }
+.domain-card { padding: 16px 12px; border-radius: 10px; text-align: center; border: 1px solid; cursor: pointer; transition: transform .15s; }
+.domain-card:hover { transform: translateY(-2px); }
+.domain-card .icon { font-size: 20px; margin-bottom: 8px; }
+.domain-card .name { font-size: 11px; font-weight: 600; line-height: 1.3; }
+.domain-card .weight { font-size: 20px; font-weight: 800; margin-top: 4px; }
+.start-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+.info-bar { display: flex; gap: 24px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+.info-item { display: flex; align-items: center; gap: 6px; color: #a1a1aa; font-size: 13px; }
+
+/* STUDY GUIDE */
+.study-header { padding: 24px; border-radius: 12px; color: #fff; margin-bottom: 20px; }
+.study-header h2 { font-size: 22px; font-weight: 800; }
+.study-header p { opacity: .8; font-size: 14px; margin-top: 4px; }
+.tabs { display: flex; gap: 2px; background: #f4f4f5; padding: 4px; border-radius: 8px; margin-bottom: 20px; }
+.tab { flex: 1; padding: 8px; border: none; background: transparent; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--muted); transition: all .15s; }
+.tab.active { background: #fff; color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.concept-grid { display: grid; gap: 10px; }
+.concept-card { padding: 14px 16px; border-left: 3px solid; border-radius: 0 8px 8px 0; background: #f8f8f8; }
+.concept-card .term { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+.concept-card .def { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.trap-list { list-style: none; display: grid; gap: 8px; }
+.trap-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.5; }
+.trap-list li::before { content: "⚠"; flex-shrink: 0; margin-top: 1px; }
+.mnemonic-box { background: #1e1b4b; color: #c7d2fe; padding: 20px; border-radius: 10px; font-size: 14px; line-height: 1.7; }
+.mnemonic-box strong { color: #a5b4fc; }
+.rule-box { background: #fafafa; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 1.6; margin-bottom: 10px; }
+.rule-box .rule-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 4px; }
+
+/* QUIZ */
+.question-header { margin-bottom: 20px; }
+.scenario-tag { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.official-tag { background: #fef9c3; color: #854d0e; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+.question-text { font-size: 17px; font-weight: 600; line-height: 1.6; color: var(--text); }
+.options { display: grid; gap: 10px; margin-top: 20px; }
+.option { display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px; border: 2px solid var(--border); border-radius: 10px; cursor: pointer; transition: all .15s; background: #fff; text-align: left; width: 100%; }
+.option:hover:not(:disabled) { border-color: #a5b4fc; background: #f5f3ff; }
+.option-letter { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; transition: all .15s; margin-top: 1px; }
+.option-text { font-size: 14px; line-height: 1.55; color: var(--text); }
+.option.correct { border-color: var(--correct-border); background: var(--correct-bg); }
+.option.correct .option-letter { background: var(--correct); border-color: var(--correct); color: #fff; }
+.option.wrong { border-color: var(--wrong-border); background: var(--wrong-bg); }
+.option.wrong .option-letter { background: var(--wrong); border-color: var(--wrong); color: #fff; }
+.option.dimmed { opacity: .45; }
+.option:disabled { cursor: default; }
+.explanation { margin-top: 16px; padding: 16px; border-radius: 8px; font-size: 14px; line-height: 1.6; }
+.explanation.correct { background: var(--correct-bg); border-left: 4px solid var(--correct); }
+.explanation.wrong { background: var(--wrong-bg); border-left: 4px solid var(--wrong); }
+.explanation .expl-label { font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.next-btn-row { margin-top: 20px; display: flex; justify-content: flex-end; }
+
+/* DOMAIN REVIEW */
+.score-summary { display: flex; align-items: center; gap: 20px; padding: 24px; border-radius: 12px; margin-bottom: 20px; }
+.score-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; }
+.score-circle .sc-pct { font-size: 22px; font-weight: 800; }
+.score-circle .sc-label { font-size: 10px; font-weight: 600; opacity: .8; }
+.score-circle.pass { background: var(--correct); }
+.score-circle.fail { background: var(--wrong); }
+.score-circle.ok { background: #d97706; }
+.score-info h3 { font-size: 18px; font-weight: 700; }
+.score-info p { color: var(--muted); font-size: 14px; margin-top: 4px; }
+.missed-list { display: grid; gap: 12px; }
+.missed-item { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.missed-header { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; cursor: pointer; background: #fafafa; }
+.missed-header:hover { background: #f4f4f5; }
+.missed-q { font-size: 13px; font-weight: 600; line-height: 1.5; flex: 1; }
+.missed-icon { color: var(--wrong); flex-shrink: 0; margin-top: 2px; }
+.missed-body { padding: 14px 16px; border-top: 1px solid var(--border); display: none; }
+.missed-body.open { display: block; }
+.missed-correct { font-size: 12px; font-weight: 700; color: var(--correct); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; }
+.missed-expl { font-size: 13px; line-height: 1.6; color: var(--muted); }
+
+/* FINAL */
+.final-ring-wrap { display: flex; flex-direction: column; align-items: center; padding: 32px 24px; background: var(--surface); border-radius: 16px; margin-bottom: 24px; }
+.final-ring-wrap h2 { color: #fff; font-size: 22px; font-weight: 800; margin-top: 16px; }
+.final-ring-wrap p { color: #a1a1aa; font-size: 14px; margin-top: 4px; }
+.pass-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; border-radius: 99px; font-size: 14px; font-weight: 700; margin-top: 12px; }
+.pass-badge.pass { background: #dcfce7; color: #16a34a; }
+.pass-badge.fail { background: #fee2e2; color: #dc2626; }
+.domain-bars { display: grid; gap: 12px; }
+.dbar { display: grid; grid-template-columns: 160px 1fr 48px; align-items: center; gap: 12px; }
+.dbar-label { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dbar-track { height: 8px; background: #e4e4e7; border-radius: 4px; overflow: hidden; }
+.dbar-fill { height: 100%; border-radius: 4px; transition: width .6s; }
+.dbar-pct { font-size: 13px; font-weight: 700; text-align: right; }
+.missed-domain-section { margin-top: 8px; }
+.missed-domain-section h4 { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.final-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .domain-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .dbar { grid-template-columns: 120px 1fr 40px; }
+  .score-summary { flex-direction: column; text-align: center; }
+  .hero h1 { font-size: 24px; }
+}
+code { background: #f4f4f5; padding: 1px 5px; border-radius: 4px; font-size: .9em; font-family: 'SF Mono', 'Fira Code', monospace; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ─── EXAM DATA ───────────────────────────────────────────────────────────────
+const PASS_SCALED = 720;
+const DOMAINS = [
+{
+  id:1, name:"Agentic Architecture & Orchestration", weight:27, color:"#6366f1", light:"#eef2ff", icon:"fa-sitemap",
+  studyGuide:{
+    globalRules:[
+      "Deterministic > probabilistic when stakes are real. Financial/security/compliance → hooks or programmatic gates. Style/tone → prompts.",
+      "Trace failures to their origin. Scope problems = upstream (decomposition / partitioning / context-passing). Quality problems = subagent prompts.",
+      "Proportionate fixes. Single agent beats multi-agent when single suffices. Don't over-engineer."
+    ],
+    concepts:[
+      {term:'stop_reason: "tool_use"', def:'Model wants to call a tool — loop continues: execute tool, append results, call again.'},
+      {term:'stop_reason: "end_turn"', def:'Model has finished — present result to user; loop terminates. The ONLY authoritative termination signal.'},
+      {term:'Task Tool', def:'SDK mechanism for spawning subagents. allowedTools must include "Task" or the coordinator cannot delegate.'},
+      {term:'Subagent Context Isolation', def:'Subagents do NOT inherit coordinator history. Every byte they need must be in their prompt. Nothing carries over.'},
+      {term:'Parallel Subagents', def:'Multiple Task tool calls in ONE coordinator response — SDK executes them concurrently. Sequential = separate turns = triple latency.'},
+      {term:'Hub-and-Spoke', def:'ALL inter-subagent communication routes through coordinator. Subagents never talk directly to each other.'},
+      {term:'Programmatic Enforcement', def:'Code-level prerequisites block downstream calls — 100% deterministic. Cannot be achieved with prompts alone.'},
+      {term:'PreToolUse Hook', def:'Fires BEFORE tool executes. Use for: gates, authorization, prerequisites, financial limits, capturing prior state hash for audit.'},
+      {term:'PostToolUse Hook', def:'Fires AFTER tool, before model sees result. Use for: normalizing formats, redacting PII, truncating verbose outputs.'},
+      {term:'Idempotency Key', def:'UUID generated on FIRST attempt, passed on every retry. Server-side dedup prevents double-charging. Required for financial retries.'},
+      {term:'fork_session', def:'Creates independent branches from a shared expensive baseline. Use for exploring N alternatives from the same analysis.'},
+      {term:'Evaluator–Optimiser', def:'Pattern for iterative refinement with checkable quality criteria. Fails when criteria are subjective — loop spins indefinitely.'}
+    ],
+    traps:[
+      "Parsing natural language for 'I'm done' to determine loop termination — only stop_reason is authoritative",
+      "Using iteration caps as the PRIMARY stopping mechanism (caps are safety backstops, not the loop signal)",
+      "Assuming subagents inherit coordinator context automatically — they don't. Every byte must be explicit",
+      "Using prompt instructions for financial/security enforcement — non-zero failure rate, use hooks instead",
+      "Emitting multiple Task calls across separate turns for 'parallel' — only single-response emission is truly parallel",
+      "Blaming downstream subagents when topics are missing — trace it to the coordinator's decomposition",
+      "Overlooking that allowedTools must include 'Task' for coordinator to delegate"
+    ],
+    mnemonic:`<strong>STOP</strong> — Agentic loop:
+• <strong>S</strong>top on end_turn only (stop_reason is the signal)
+• <strong>T</strong>ask tool to spawn (allowedTools must include it)
+• <strong>O</strong>nce per response for parallel (multiple Task calls, single response)
+• <strong>P</strong>rogrammatic for stakes (hooks when failure = financial harm)
+
+<strong>"Nothing carries over to subagents. The prompt is their universe."</strong>`
+  },
+  questions:[
+    {
+      scenario:"Customer Support Agent",
+      official:true,
+      text:"Production data shows that in 12% of cases, your customer support agent skips <code>get_customer</code> entirely and calls <code>lookup_order</code> using only the customer's stated name, occasionally leading to misidentified accounts and incorrect refunds. What change would most effectively address this reliability issue?",
+      options:["Add a programmatic prerequisite that blocks <code>lookup_order</code> and <code>process_refund</code> calls until <code>get_customer</code> has returned a verified customer ID","Enhance the system prompt to state that customer verification via <code>get_customer</code> is mandatory before any order operations","Add few-shot examples showing the agent always calling <code>get_customer</code> first, even when customers volunteer order details","Implement a routing classifier that analyzes each request and enables only the subset of tools appropriate for that request type"],
+      correct:0,
+      explanation:"When a specific tool sequence is required for critical business logic, programmatic enforcement provides deterministic guarantees that prompt-based approaches cannot. Options B and C rely on probabilistic LLM compliance (~95-99%), which is insufficient when errors have financial consequences. Option D addresses tool availability rather than tool ordering, which is not the actual problem. Only hooks give you 100%."
+    },
+    {
+      scenario:"Agentic Loop Design",
+      text:"In the Claude Agent SDK, your loop receives a response where <code>stop_reason</code> is <code>'tool_use'</code>. What should your code do?",
+      options:["Execute the requested tool(s), append both the assistant response and tool results to messages, then call Claude again","Present the response text to the user — stop_reason tool_use means the model wants to describe the tool but not call it","Terminate the loop and extract the final answer from the tool call parameters","Wait for user confirmation before executing any tool, regardless of the tool type"],
+      correct:0,
+      explanation:"stop_reason: 'tool_use' means Claude wants to call a tool and is waiting for results. The loop must: (1) execute the tool, (2) append the assistant response AND tool results to the message history, (3) call Claude again. Only stop_reason: 'end_turn' signals completion. The common trap is checking for text content to determine completion — tool_use responses can begin with a text block."
+    },
+    {
+      scenario:"Multi-Agent Architecture",
+      text:"A coordinator agent passes its task assignment to a subagent. What context does the subagent automatically receive from the coordinator?",
+      options:["Only what is explicitly included in the subagent's prompt — subagents do not inherit coordinator history or share memory between invocations","The coordinator's full conversation history and all prior tool results","The coordinator's system prompt and the most recent 10 turns of conversation","All tool results from the coordinator's current session"],
+      correct:0,
+      explanation:"Subagents operate with isolated context — they do NOT inherit the coordinator's conversation history automatically. Every byte of context they need must be explicitly included in their prompt. This is the most common misconception about multi-agent systems. If the synthesis agent needs web search results, those results must appear verbatim in its prompt."
+    },
+    {
+      scenario:"Parallel Execution",
+      text:"How do you spawn multiple subagents to run in parallel within a single coordinator turn in the Claude Agent SDK?",
+      options:["Emit multiple Task tool calls in a single coordinator response — the SDK executes them concurrently","Make multiple sequential API calls to subagents with parallel=True in the AgentDefinition","Set parallel_execution: true in the coordinator's system prompt configuration","Use Python threading in your orchestration code to call each subagent's API endpoint concurrently"],
+      correct:0,
+      explanation:"Parallel subagent execution is achieved by emitting multiple Task tool calls in a SINGLE coordinator response, not across separate turns. Sequential turns = sequential execution. The SDK detects multiple Task tool calls in one response and executes them concurrently. Option B and D bypass the Agent SDK's coordination mechanism and lose observability."
+    },
+    {
+      scenario:"Multi-Agent Research System",
+      official:true,
+      text:"After running your multi-agent research system on 'impact of AI on creative industries,' each subagent completes successfully. However, final reports cover only visual arts, missing music, writing, and film production. The coordinator's logs show it decomposed the topic into: 'AI in digital art creation,' 'AI in graphic design,' and 'AI in photography.' What is the most likely root cause?",
+      options:["The synthesis agent lacks instructions for identifying coverage gaps in findings it receives","The coordinator agent's task decomposition is too narrow — subagent assignments don't cover all relevant domains","The web search agent's queries are not comprehensive enough and need expansion","The document analysis agent filters out non-visual creative industry sources due to overly restrictive relevance criteria"],
+      correct:1,
+      explanation:"The coordinator's logs reveal the root cause directly: it decomposed 'creative industries' into only visual arts subtasks, completely omitting music, writing, and film. The subagents executed their assigned tasks correctly — the problem is what they were assigned. Options A, C, and D incorrectly blame downstream agents working correctly within their assigned (but too-narrow) scope. Trace failures upstream."
+    },
+    {
+      scenario:"Hook Design",
+      text:"You need to ensure that specific fields returned by a customer lookup tool are always in ISO 8601 date format before the model processes them — the tool returns inconsistent date formats across different customers. Which hook type and timing is correct?",
+      options:["PostToolUse hook — fires after tool execution, before model sees result; transforms the raw output to normalized ISO 8601 format","PreToolUse hook — fires before tool execution; modifies the date format parameters before the call is made","A separate normalisation subagent that runs after each tool call and before the coordinator receives results","System prompt instruction: 'Always expect dates in ISO 8601 format from lookup tools'"],
+      correct:0,
+      explanation:"PostToolUse fires AFTER the tool executes but BEFORE the model sees the result — exactly the right moment for normalisation. The raw tool output with inconsistent formats goes in; normalised ISO 8601 comes out. PreToolUse fires before execution, so it can't transform output. A separate normalisation subagent adds unnecessary orchestration overhead. Prompt instructions cannot change what the tool actually returns."
+    },
+    {
+      scenario:"Workflow Enforcement",
+      text:"A financial trading agent must verify user authorisation before executing any trade above $10,000. The requirement is that this rule must NEVER be violated. Which implementation is correct?",
+      options:["A PreToolUse hook that intercepts trade execution calls and blocks them if the authorisation prerequisite hasn't been satisfied","A system prompt instruction: 'Always verify authorisation before executing trades above $10,000'","Few-shot examples in the prompt demonstrating the correct authorisation-first workflow","A routing subagent whose prompt emphasises the authorisation requirement before delegating to the trading agent"],
+      correct:0,
+      explanation:"'Must NEVER be violated' = deterministic enforcement = hooks. The PreToolUse hook intercepts the trade execution call before it runs and enforces the authorisation check programmatically — 100% compliance. Options B, C, and D all rely on LLM compliance, which has a non-zero failure rate (~1-5%). When a single failure causes financial or security harm, only programmatic enforcement is acceptable."
+    },
+    {
+      scenario:"Error Handling",
+      text:"Your multi-agent pipeline's document analysis subagent encounters a 429 rate limit error. Your refund processing subagent encounters a 400 bad request error. What is the correct handling for each?",
+      options:["429: retry with exponential backoff and jitter; 400: classify as permanent, feed error context back to model or escalate — do not retry","429: terminate the pipeline and report failure; 400: retry immediately with the same request","Both: retry with exponential backoff until success","Both: catch the error, return empty string to prevent the coordinator from seeing the failure"],
+      correct:0,
+      explanation:"Error types require different handling. 429 (rate limit) is TRANSIENT — retry with exponential backoff + jitter, capped retries. 400 (bad request) is PERMANENT — the same request will fail again; don't retry, feed the error back to the model or escalate. Blanket retry on all errors leads to wasted calls and duplicate actions. Silently returning empty string (Option D) is a dangerous anti-pattern — the model produces confident wrong answers without knowing the tool failed."
+    },
+    {
+      scenario:"Session Management",
+      text:"Your team has completed a large codebase analysis session. Now you want to explore two different refactoring approaches (dependency injection vs. service locator pattern) from that same analysis, comparing them independently without mixing their conclusions. What is the correct mechanism?",
+      options:["Use fork_session to create independent branches from the shared codebase analysis baseline, exploring each approach separately","Use --resume <session-name> twice in separate terminal windows to run both explorations simultaneously","Start two fresh sessions and re-run the full codebase analysis for each approach","Create two subagents in the same coordinator session, one for each approach, sharing the analysis context"],
+      correct:0,
+      explanation:"fork_session creates independent branches from a shared expensive baseline — exactly for 'explore N alternatives from the same analysis.' Both branches start with the same codebase findings but diverge independently, so conclusions don't contaminate each other. --resume continues the same session (not branching). Starting fresh sessions wastes the expensive analysis. Subagents within one session would share context and potentially contaminate each other's conclusions."
+    },
+    {
+      scenario:"Task Decomposition",
+      text:"You're building a content generation pipeline: analyze brief → research topic → write draft → review draft → final edit. Each step requires the prior step's output. A user can request anything from a 500-word blog post to a 10,000-word report. Which task decomposition pattern is most appropriate?",
+      options:["Fixed sequential pipeline with typed subagents for each role (analyzer, researcher, writer, reviewer, editor)","Dynamic decomposition that generates subtasks based on what is discovered at each step","Orchestrator–worker with uniform worker agents differentiated only by prompt-supplied scope","Evaluator–optimiser that iterates until quality criteria are met"],
+      correct:0,
+      explanation:"The task has a stable, predictable structure (always these 5 steps, always this order, always each step consumes prior output) — classic fixed sequential pipeline. Each step is a distinct role with different tools and reasoning, so typed subagents (not uniform workers) are appropriate. Dynamic decomposition applies when structure isn't known upfront. Evaluator-optimiser applies when first-pass output is often insufficient and quality is objectively checkable."
+    },
+    {
+      scenario:"Multi-Concern Requests",
+      text:"A customer support message says: 'I was charged twice for my order last week AND the replacement item I received is damaged.' Both issues need investigation and resolution. What is the optimal orchestration approach?",
+      options:["Decompose into two distinct items (billing dispute, damaged item), investigate each in parallel using shared customer context, then synthesize a unified resolution","Handle issues sequentially — resolve billing dispute first, then investigate damage — to avoid context confusion between issues","Escalate immediately because multi-issue requests exceed single-agent scope","Ask the customer to submit separate tickets for each issue to ensure each receives proper attention"],
+      correct:0,
+      explanation:"Multi-concern requests should be decomposed into distinct items, investigated in parallel (the issues are independent), using shared context from the initial conversation (customer ID, order details), then synthesized into a unified resolution. Sequential handling adds unnecessary latency. Escalation is wrong for manageable multi-issue cases. Separate tickets create poor customer experience and may violate the 80%+ first-contact resolution target."
+    },
+    {
+      scenario:"Observability Design",
+      text:"Your multi-agent research pipeline sometimes produces reports missing source attribution — claims appear without citation. Logs show individual subagents complete successfully and return results. Where is the most likely failure point?",
+      options:["The context-passing format — subagents return prose summaries that collapse claim-to-source mappings; the coordinator receives content without attribution metadata","The synthesis agent's system prompt lacks instructions to preserve citations","The web search agent isn't returning source URLs in its tool results","The coordinator's aggregation step strips metadata when combining results into the final prompt"],
+      correct:0,
+      explanation:"When subagents return prose summaries instead of structured claim-source mappings, attribution is destroyed in the compression step. The fix is requiring subagents to output structured data: {claim, evidence_excerpt, source_url, publication_date}. This way the synthesis agent has explicit attribution to preserve. The other options may be contributing factors but the root cause in this pattern is the context-passing format — not the synthesis prompt or individual tool results."
+    }
+  ]
+},
+{
+  id:2, name:"Tool Design & MCP Integration", weight:18, color:"#0891b2", light:"#ecfeff", icon:"fa-puzzle-piece",
+  studyGuide:{
+    globalRules:[
+      "Tool descriptions ARE the routing mechanism. The model has nothing else when choosing between similar tools. Minimal descriptions → misrouting.",
+      "isError: true means access failure (retry decisions needed). isError: false with empty results means successful query with no matches (no action needed). These require opposite coordinator responses.",
+      "Scope tool access to the agent's role. Too many tools (18 vs 4–5) degrades selection reliability. Agents with out-of-role tools misuse them."
+    ],
+    concepts:[
+      {term:'Tool Description Quality', def:'Must answer: WHAT it does, WHAT parameters, WHAT it returns, WHEN to use it, WHEN NOT to use it vs. similar alternatives.'},
+      {term:'isError flag', def:'MCP pattern: true = tool failure (couldn\'t reach source, invalid input). false + empty results = valid query, no matches. Opposite responses required.'},
+      {term:'errorCategory', def:'"transient" (retry), "validation" (fix input), "business" (policy violation, isRetryable: false), "permission" (access denied).'},
+      {term:'isRetryable', def:'Boolean. transient errors: true. business/permission errors: false — retrying will fail again.'},
+      {term:'tool_choice: "auto"', def:'Model MAY call a tool OR return conversational text. Does NOT guarantee tool use.'},
+      {term:'tool_choice: "any"', def:'Model MUST call at least one tool (can choose which). Use when structured output is required.'},
+      {term:'Forced tool selection', def:'{"type": "tool", "name": "extract_metadata"} — forces a specific tool first. Use when a specific step must run before others.'},
+      {term:'Scoped Tool Access', def:'Each agent gets only tools relevant to its role. Prevents cross-role misuse, improves selection reliability.'},
+      {term:'.mcp.json', def:'Project-level MCP config — version-controlled, shared with team. Use ${GITHUB_TOKEN} for credentials.'},
+      {term:'~/.claude.json', def:'User-level MCP config — personal/experimental servers, NOT version-controlled, NOT shared.'},
+      {term:'MCP Resources', def:'Read-only content catalogs (DB schemas, issue summaries) giving agents upfront visibility to reduce exploratory tool calls.'},
+    ],
+    traps:[
+      '"get_customer — Retrieves customer information" is not a tool description, it\'s a label. Write descriptions that differentiate from similar tools',
+      'tool_choice: "auto" does NOT guarantee a tool is called. Use "any" or forced selection for guaranteed structured output',
+      'Returning isError: true for zero-result queries — zero results is success, not failure. Only use isError: true for actual access failures',
+      'Marking business rule violations as isRetryable: true — the same call will fail again with the same policy',
+      'Generic error messages like "Operation failed" hide context the coordinator needs to make intelligent recovery decisions',
+      'Giving one agent 18 tools "for flexibility" — degrades selection reliability; scope to 4-5 per role'
+    ],
+    mnemonic:`<strong>DESCRIBE</strong> — tool design checklist:
+• <strong>D</strong>ifferentiate from similar tools (explicit "use this NOT that")
+• <strong>E</strong>xamples in description (input examples, return format)
+• <strong>S</strong>tructured errors (isError + errorCategory + isRetryable)
+• <strong>C</strong>ategory correctly (transient/validation/business/permission)
+• <strong>R</strong>etryable flag set right (business=false, transient=true)
+• <strong>I</strong>solate tools per role (4-5 per agent, not 18)
+• <strong>B</strong>oundary conditions (when to use vs NOT to use)
+• <strong>E</strong>mpty ≠ error (zero results → isError: false)`
+  },
+  questions:[
+    {
+      scenario:"Customer Support Agent",
+      official:true,
+      text:"Production logs show your customer support agent frequently calls <code>get_customer</code> when users ask about orders (e.g., 'check my order #12345'), instead of calling <code>lookup_order</code>. Both tools have minimal descriptions ('Retrieves customer information' / 'Retrieves order details') and accept similar identifier formats. What's the most effective first step?",
+      options:["Expand each tool's description to include input formats it handles, example queries, edge cases, and boundaries explaining when to use it versus similar tools","Add few-shot examples to the system prompt demonstrating correct tool selection patterns, with 5-8 examples showing order-related queries routing to lookup_order","Implement a routing layer that parses user input before each turn and pre-selects the appropriate tool based on detected keywords","Consolidate both tools into a single lookup_entity tool that accepts any identifier and internally determines which backend to query"],
+      correct:0,
+      explanation:"Tool descriptions are the primary mechanism LLMs use for tool selection. When descriptions are minimal, models lack context to differentiate between similar tools. Expanding descriptions directly addresses the root cause with minimum effort. Few-shot examples (B) add token overhead without fixing the underlying issue. A routing layer (C) is over-engineered and bypasses the model's natural language understanding. Consolidating tools (D) is valid but requires more effort than a 'first step' warrants."
+    },
+    {
+      scenario:"Multi-Agent Research System",
+      official:true,
+      text:"During testing, your synthesis agent frequently verifies claims during synthesis, requiring 2-3 coordinator round trips per task (+40% latency). Evaluation shows 85% of verifications are simple fact-checks (dates, names, statistics) while 15% require deeper investigation. What's the most effective approach?",
+      options:["Give the synthesis agent a scoped <code>verify_fact</code> tool for simple lookups, while complex verifications continue delegating to the web search agent through the coordinator","Have the synthesis agent accumulate all verification needs and return them as a batch at the end of its pass for the coordinator to handle at once","Give the synthesis agent access to all web search tools so it can handle any verification directly without round-trips","Have the web search agent proactively cache extra context during initial research, anticipating what synthesis will need"],
+      correct:0,
+      explanation:"Option A applies the principle of least privilege — give the synthesis agent only what it needs for the 85% common case (simple fact-checks) via a scoped tool, while preserving the existing coordination pattern for the complex 15%. Option B creates blocking dependencies since synthesis steps may depend on earlier verified facts. Option C over-provisions the synthesis agent (violating scoped access). Option D relies on speculative caching that can't reliably predict future verification needs."
+    },
+    {
+      scenario:"Customer Support Agent",
+      text:"Your <code>process_refund</code> MCP tool receives a request for a $750 refund. Business policy limits automatic approval to $500. What is the correct tool response?",
+      options:['Return isError: true, errorCategory: "business", isRetryable: false, with a human-readable explanation — allowing the agent to communicate appropriately and redirect to human escalation','Return isError: true with a generic message "Refund amount exceeds limit" — the agent will handle the rest','Process a $500 partial refund silently and return success','Throw an exception that terminates the entire workflow'],
+      correct:0,
+      explanation:"Business rule violations should return structured error responses with errorCategory: 'business' and isRetryable: false so the agent knows retrying is futile and takes appropriate action (explain policy, escalate to human). The structured metadata — not just the message — enables intelligent coordinator decisions. Silent partial processing creates data inconsistency. Exception termination destroys the whole workflow unnecessarily."
+    },
+    {
+      scenario:"Structured Data Extraction",
+      text:"You have a document extraction system using <code>tool_choice: 'auto'</code>. Occasionally the model returns a plain-text narrative instead of using the extraction tool. What is the correct fix?",
+      options:['Change to tool_choice: "any" to guarantee the model calls at least one tool rather than returning plain text','Add "Always use the extraction tool" to the system prompt','Set temperature to 0 for more deterministic tool-calling behavior','Switch to a larger model that is more reliable at following tool-use instructions'],
+      correct:0,
+      explanation:"tool_choice: 'auto' allows the model to either call a tool OR return conversational text — it does NOT guarantee tool use. tool_choice: 'any' guarantees the model must call at least one tool (though it can choose which). This eliminates the plain-text fallback. The system prompt instruction (B) is probabilistic. Temperature (C) controls randomness, not tool-use behavior. A larger model (D) doesn't guarantee tool use either."
+    },
+    {
+      scenario:"Multi-Agent Research System",
+      text:"A search query for <code>get_documents(topic='quantum computing 2024')</code> returns zero matching documents. What is the correct tool response and <code>isError</code> value?",
+      options:['{"isError": false, "documents": [], "count": 0} — zero results is a valid successful query outcome, not a failure','{"isError": true, "message": "No documents found for quantum computing 2024"}','{"isError": true, "errorCategory": "validation"} — failed queries should always return errors','null — return null for empty result sets'],
+      correct:0,
+      explanation:"Empty results from a valid query represent SUCCESS — the tool executed correctly and found no matching documents. isError: true for empty results causes the coordinator to treat valid empty states as failures requiring recovery (retries, error handling). isError: true should be reserved for ACTUAL failures: service unavailable, invalid input, permission denied, timeout. Zero results → valid but empty response."
+    },
+    {
+      scenario:"Developer Productivity Tools",
+      text:"Your developer productivity agent has access to 18 different tools covering code search, file operations, API calls, database queries, documentation lookup, and testing utilities. The agent is making frequent tool selection mistakes, calling documentation tools when it should call code search tools. What's the most effective architectural fix?",
+      options:["Scope each subagent's tool set to those relevant to its specific role — a search subagent gets search tools, a documentation subagent gets documentation tools","Add detailed selection guidance to the system prompt explaining when to use each of the 18 tools","Consolidate the 18 tools into 3 generic tools that handle multiple operations internally","Implement a preprocessing classifier that analyzes each request and pre-selects the appropriate tool"],
+      correct:0,
+      explanation:"Too many tools (18) degrades tool selection reliability by increasing decision complexity. The principle of scoped tool access: give each agent only tools relevant to its role. Agents with out-of-role tools misuse them. A specialist search agent with 3-4 search tools will outperform a generalist with 18. Option B adds token overhead without fixing the root cause. Options C and D add complexity without addressing the fundamental tool scope problem."
+    },
+    {
+      scenario:"MCP Configuration",
+      text:"Your team wants to configure a GitHub MCP server so it's available to all developers who clone the repository, with each developer's own GitHub token. Where should this server be configured and how should the token be handled?",
+      options:["In .mcp.json in the project root with ${GITHUB_TOKEN} environment variable expansion — version-controlled config, personal credentials in each dev's environment","In ~/.claude.json on each developer's machine — this is personal config and shouldn't be version-controlled","In CLAUDE.md with instructions for developers to set up the MCP server manually","In settings.json with the GitHub token hardcoded — easier for team setup"],
+      correct:0,
+      explanation:".mcp.json in the project root is for shared team MCP servers. The ${GITHUB_TOKEN} pattern allows the configuration to be version-controlled and shared while keeping actual credentials in each developer's environment variables. ~/.claude.json is for personal/experimental servers NOT shared with teammates. Hardcoding tokens in version-controlled files risks credential exposure."
+    },
+    {
+      scenario:"Tool Design",
+      text:"Which tool description will produce the most reliable tool selection when used alongside a similar tool?",
+      options:["<code>search_customer_records(query)</code> — Searches customer accounts by email address, phone number, or customer_id. Returns matching accounts with: id, name, email, status, created_at. Use THIS tool first to verify customer identity before any order operations. Do NOT use for order lookups — use lookup_order for that.","<code>search_customer_records(query)</code> — Searches the customer database","<code>search_customer_records(query)</code> — Finds customer information","<code>search_customer_records(q)</code> — Customer search tool that returns results"],
+      correct:0,
+      explanation:"The best description answers: WHAT it does, WHAT parameters it accepts (specific identifier types), WHAT it returns (explicit fields), WHEN to use it ('verify customer identity first'), and crucially WHEN NOT to use it vs. similar tools ('Do NOT use for order lookups — use lookup_order'). The boundary condition distinguishing similar tools is the most important element for reliable selection. Options B, C, D give the model nothing to differentiate this tool from alternatives."
+    },
+    {
+      scenario:"MCP Error Handling",
+      text:"A transient network timeout occurs when your MCP tool attempts to reach an external API. What should the tool return, and what should the coordinator do with this information?",
+      options:['Return isError: true, errorCategory: "transient", isRetryable: true with the attempted query and partial results; coordinator can retry with modified query or proceed with partial results','Return isError: true with a generic "Service unavailable" message; coordinator retries automatically','Catch the timeout, return isError: false with empty results so the pipeline continues cleanly','Return isError: true, isRetryable: false — timeouts are unrecoverable failures'],
+      correct:0,
+      explanation:"Structured error context with errorCategory: 'transient' and isRetryable: true gives the coordinator the information to make intelligent recovery decisions — whether to retry with modified query, use an alternative source, or proceed with partial results. A generic 'Service unavailable' (B) hides context the coordinator needs. Returning success with empty results (C) suppresses the error, preventing any recovery. isRetryable: false on a transient error (D) incorrectly prevents valid retry attempts."
+    },
+    {
+      scenario:"Tool Architecture",
+      text:"You're building a multi-step document processing pipeline: first extract metadata, then enrich with external data based on the extracted fields. You need to guarantee that metadata extraction always runs before enrichment, even if the model might try to skip it. What is the correct tool_choice configuration for the first step?",
+      options:['Forced tool selection: {"type": "tool", "name": "extract_metadata"} — guarantees the specific metadata extraction tool runs first before any enrichment tools can be called','tool_choice: "any" — guarantees a tool is called, and the model will naturally choose the right one first','tool_choice: "auto" — the model understands the workflow and will call extract_metadata first','System prompt instruction: "Always call extract_metadata before extract_enrichment_data"'],
+      correct:0,
+      explanation:"Forced tool selection ensures extract_metadata is called first — 100% deterministic. After the metadata is extracted, subsequent turns can use 'any' or 'auto' for the enrichment step which can now use the extracted fields. tool_choice: 'any' (B) guarantees a tool is called but doesn't specify which — the model might choose enrichment first. 'auto' (C) doesn't even guarantee tool use. System prompt instructions (D) are probabilistic and insufficient for workflow ordering requirements."
+    }
+  ]
+},
+{
+  id:3, name:"Claude Code Configuration & Workflows", weight:20, color:"#059669", light:"#ecfdf5", icon:"fa-sliders",
+  studyGuide:{
+    globalRules:[
+      "Configuration > invocation. When the team needs something to happen consistently, automatically, for everyone — it's a file in the right location, not a command someone must remember.",
+      "Path prefix is the whole answer. ~/.claude/ is personal, never shared. .claude/ (project) is shared via git. Same filename, opposite scope. Memorise this cold.",
+      "Load only what's needed. Always-on standards → CLAUDE.md. Pattern-matched → .claude/rules/ with paths: frontmatter. On-demand → skills/commands."
+    ],
+    concepts:[
+      {term:'~/.claude/CLAUDE.md', def:'User-level. NOT version-controlled. Only on your machine. Never reaches teammates via git.'},
+      {term:'.claude/CLAUDE.md / root CLAUDE.md', def:'Project-level. Version-controlled. Shared with all team members when they clone.'},
+      {term:'subdirectory/CLAUDE.md', def:'Directory-level. Highest precedence for files in that directory. Scopes downward and local, never upward.'},
+      {term:'@import syntax', def:'References external files to keep CLAUDE.md modular. Import per-package standards files.'},
+      {term:'.claude/rules/ with paths:', def:'YAML frontmatter glob patterns for conditional loading. Loads ONLY when editing matching files — e.g., **/*.test.tsx for test conventions across entire codebase.'},
+      {term:'.claude/commands/', def:'Project-scoped slash commands — version-controlled, available to all devs after clone.'},
+      {term:'~/.claude/commands/', def:'User-scoped slash commands — personal, NOT shared via version control.'},
+      {term:'context: fork', def:'Skill frontmatter — runs skill in isolated sub-agent. Verbose output stays in fork; only summary returns to main conversation.'},
+      {term:'allowed-tools in SKILL.md', def:'Restricts which tools the skill can call during execution. Use to prevent destructive actions.'},
+      {term:'argument-hint in SKILL.md', def:'Prompts developer for required parameters when skill is invoked without arguments.'},
+      {term:'-p / --print flag', def:'Non-interactive mode for CI/CD. Exits after response without waiting for user input. Without it: CI hangs indefinitely.'},
+      {term:'--output-format json + --json-schema', def:'Produces machine-parseable structured findings for automated posting as inline PR comments.'},
+      {term:'Plan mode', def:'For complex tasks with architectural decisions, large-scale changes, multiple valid approaches. Explore before commit.'},
+      {term:'Direct execution', def:'For well-scoped, well-understood changes. Single-file bug fix, known pattern, no architectural decisions.'}
+    ],
+    traps:[
+      "Team conventions written to ~/.claude/CLAUDE.md are NEVER git-tracked — new team members get nothing. Use project-level config.",
+      "Directory CLAUDE.md scopes downward and local only — src/backend/CLAUDE.md does NOT affect work in src/",
+      "Standards in a slash command require opt-in invocation. Standards must be ambient (CLAUDE.md or rules/) not opt-in.",
+      "Editing the project skill to add personal customisation affects all teammates. Create a personal skill in ~/.claude/skills/ with a different name.",
+      "context: fork for skills and Explore subagent for investigations have the same goal (keep noise out of main context) but are different mechanisms",
+      "The same Claude session that generated code is LESS effective at reviewing it — use an independent fresh session",
+      "After fixing CI hang with -p, don't also add /dev/null stdin redirect — the -p flag is the complete solution"
+    ],
+    mnemonic:`<strong>CHIPS</strong> — Claude Code config:
+• <strong>C</strong>ommands in .claude/commands/ (shared) or ~/.claude/commands/ (personal)
+• <strong>H</strong>ierarchy: directory > project > user (closer = higher precedence)
+• <strong>I</strong>mport with @import to keep CLAUDE.md modular
+• <strong>P</strong>ath rules in .claude/rules/ for conditional glob-based loading
+• <strong>S</strong>kills in .claude/skills/ with context:fork, allowed-tools, argument-hint
+
+<strong>"-p flag = non-interactive CI mode. Without it, the job hangs. Always."</strong>`
+  },
+  questions:[
+    {
+      scenario:"Code Generation with Claude Code",
+      official:true,
+      text:"You want to create a custom <code>/review</code> slash command that runs your team's standard code review checklist. This command should be available to every developer when they clone or pull the repository. Where should you create this command file?",
+      options:["In the <code>.claude/commands/</code> directory in the project repository","In <code>~/.claude/commands/</code> in each developer's home directory","In the <code>CLAUDE.md</code> file at the project root","In a <code>.claude/config.json</code> file with a <code>commands</code> array"],
+      correct:0,
+      explanation:"Project-scoped custom slash commands go in .claude/commands/ within the repository. These are version-controlled and automatically available to all developers when they clone or pull. ~/.claude/commands/ (B) is for personal commands not shared via version control. CLAUDE.md (C) is for instructions and context, not command definitions. A config.json commands array (D) is not a valid Claude Code configuration mechanism."
+    },
+    {
+      scenario:"Code Generation with Claude Code",
+      official:true,
+      text:"You've been assigned to restructure the team's monolithic application into microservices. This involves changes across dozens of files and requires decisions about service boundaries and module dependencies. Which approach should you take?",
+      options:["Enter plan mode to explore the codebase, understand dependencies, and design an implementation approach before making changes","Start with direct execution and make changes incrementally, letting the implementation reveal the natural service boundaries","Use direct execution with comprehensive upfront instructions detailing exactly how each service should be structured","Begin in direct execution mode and only switch to plan mode if you encounter unexpected complexity during implementation"],
+      correct:0,
+      explanation:"Plan mode is for complex tasks with large-scale changes, multiple valid approaches, and architectural decisions — exactly what monolith-to-microservices requires. It enables safe exploration and design before committing to changes, preventing costly rework. Option B risks discovering dependency conflicts only after making breaking changes. Option C assumes you already know the correct structure without exploring. Option D ignores that the complexity is stated in the requirements, not something that might emerge."
+    },
+    {
+      scenario:"Code Generation with Claude Code",
+      official:true,
+      text:"Your codebase has distinct areas with different conventions. Test files are spread throughout (e.g., <code>Button.test.tsx</code> next to <code>Button.tsx</code>), and you want all tests to follow the same conventions regardless of location. What's the most maintainable approach?",
+      options:["Create rule files in <code>.claude/rules/</code> with YAML frontmatter <code>paths: [\"**/*.test.tsx\"]</code> to conditionally apply test conventions based on file paths","Consolidate all conventions in the root CLAUDE.md under headers for each area, relying on Claude to infer which section applies","Create skills in .claude/skills/ for each code type that include relevant conventions","Place a separate CLAUDE.md file in each subdirectory containing that area's specific conventions"],
+      correct:0,
+      explanation:".claude/rules/ with glob patterns like **/*.test.tsx allows conventions to apply based on file paths regardless of directory location — essential for test files spread across the codebase. Option B relies on inference rather than explicit matching. Option C requires manual skill invocation, violating the 'standards must be ambient' principle. Option D can't handle files spread across many directories since CLAUDE.md files are directory-bound — you'd need N copies that drift."
+    },
+    {
+      scenario:"Claude Code for CI/CD",
+      official:true,
+      text:"Your pipeline script runs <code>claude \"Analyze this pull request for security issues\"</code> but the job hangs indefinitely. Logs indicate Claude Code is waiting for interactive input. What's the correct approach?",
+      options:["Add the <code>-p</code> flag: <code>claude -p \"Analyze this pull request for security issues\"</code>","Set the environment variable <code>CLAUDE_HEADLESS=true</code> before running the command","Redirect stdin from /dev/null: <code>claude \"Analyze...\" < /dev/null</code>","Add the <code>--batch</code> flag: <code>claude --batch \"Analyze this pull request...\"</code>"],
+      correct:0,
+      explanation:"The -p (or --print) flag is the documented way to run Claude Code in non-interactive mode. It processes the prompt, outputs to stdout, and exits without waiting for user input — exactly what CI/CD requires. CLAUDE_HEADLESS (B) and --batch (D) are non-existent flags. The /dev/null stdin redirect (C) doesn't properly address Claude Code's interactive mode — the -p flag is the complete, documented solution."
+    },
+    {
+      scenario:"Code Generation with Claude Code",
+      text:"Two developers on the same repository are getting inconsistent behaviour from Claude Code. Developer A gets correct TypeScript conventions applied; Developer B gets none. Both are on the same branch with the same code. What is the most likely root cause?",
+      options:["Developer A's TypeScript conventions are written in ~/.claude/CLAUDE.md (user-level config, never git-tracked) — Developer B's machine has no such file","The project's CLAUDE.md file has a typo preventing correct loading on Developer B's machine","Developer B needs to run /memory reload to pick up the project's configuration","Developer B's Claude Code installation is outdated and needs to be updated"],
+      correct:0,
+      explanation:"Divergent behaviour between teammates on the same repo almost always means user-level vs project-level config. ~/.claude/CLAUDE.md is personal and never git-tracked — it only exists on the machine where it was created. When Developer A set up conventions there, they were never shared. The fix: move team-wide conventions to the project-level .claude/CLAUDE.md or root CLAUDE.md and commit. /memory reload (C) can't conjure a file that doesn't exist on Developer B's machine."
+    },
+    {
+      scenario:"Claude Code Skills",
+      text:"A skill in <code>.claude/skills/analyze-architecture/SKILL.md</code> performs deep codebase analysis, producing thousands of tokens of grep output, file listings, and dependency graphs. Team members report it makes their main conversation unusable after invocation. What's the correct fix?",
+      options:["Add <code>context: fork</code> to the skill's frontmatter — this runs the skill in an isolated sub-agent, keeping verbose output out of the main conversation; only a summary returns","Reduce the skill's output by trimming its instructions to produce shorter analysis","Move the skill to a personal directory so each developer can manage their own context","Add a PostToolUse hook that clears the context window after the skill completes"],
+      correct:0,
+      explanation:"context: fork in skill frontmatter runs the skill in an isolated sub-agent. All the verbose grep output, file listings, and dependency graphs stay within the fork; only the final summary returns to the main conversation. This is exactly the mechanism for skills that produce substantial intermediate output. Trimming instructions (B) reduces quality. Moving to personal directory (C) doesn't solve the context pollution problem. PostToolUse hook for context clearing (D) doesn't exist in Claude Code."
+    },
+    {
+      scenario:"CI/CD Integration",
+      text:"Your CI code review tool posts findings as inline PR comments. Developers report receiving duplicate comments on every new commit push — findings they've already addressed keep reappearing. What is the correct fix?",
+      options:["Pass prior review findings into the next review run and instruct Claude to report only new or still-unaddressed issues","Disable the review bot — it's generating too much noise and developers have stopped reading it","Reset the review findings database on every new commit so each review starts fresh","Run the review on only the incremental diff since the last commit, not the full PR"],
+      correct:0,
+      explanation:"Duplicate comments appear because the review has no memory of what it already reported. Including prior findings in context and instructing 'report only new or still-unaddressed issues' solves this cleanly. Disabling the bot (B) treats the symptom by removing the tool — incremental review context fixes the actual problem. Resetting the database (C) would make duplicates worse. Running only the incremental diff (D) would miss issues that persist across commits."
+    },
+    {
+      scenario:"CI/CD Integration",
+      text:"Your CI pipeline generates tests for new code changes. Developers report the generated tests duplicate scenarios already covered by the existing test suite. What is the targeted fix for this specific problem?",
+      options:["Provide existing test files in the generation prompt context so Claude knows what's already covered and generates only genuinely missing scenarios","Document valuable-test criteria and fixture locations in .claude/CLAUDE.md","Use --output-format json to get structured test proposals before committing them","Run the existing test suite and pass the results to Claude as context"],
+      correct:0,
+      explanation:"Duplicate test generation occurs because Claude doesn't know what's already covered. Providing existing test files in context gives Claude the knowledge to identify genuinely missing coverage — avoiding duplicate scenarios. CLAUDE.md testing standards (B) fix LOW-QUALITY tests (boilerplate, trivial getters), not duplicate tests — these are different problems with different solutions. --output-format json (C) structures output but doesn't prevent duplication."
+    },
+    {
+      scenario:"Path-Specific Rules",
+      text:"Your team needs to enforce different code conventions for three distinct areas: React components (functional/hooks), API handlers (async/await error patterns), and database migrations (specific safety requirements). All three have files spread throughout the codebase. What is the most maintainable solution?",
+      options:["Create three separate files in .claude/rules/ with YAML frontmatter paths: glob patterns targeting each file type — each loads only when editing matching files","Write one large CLAUDE.md with sections for each area and rely on Claude to infer which section applies to the current file","Create three separate CLAUDE.md files in three separate directories — one for components/, one for api/, one for migrations/","Create three slash commands /react-conventions, /api-conventions, /migration-conventions that developers invoke before working on each area"],
+      correct:0,
+      explanation:"Path-specific rules in .claude/rules/ with glob patterns load conditionally — only when working on matching files. One file per convention area, one glob pattern per file type, applies everywhere the glob matches. Option B relies on inference (unreliable). Option C requires files in specific directories and can't handle the 'spread throughout codebase' requirement. Option D requires opt-in invocation — conventions must be ambient, not opt-in. Developers will forget."
+    },
+    {
+      scenario:"Iterative Refinement",
+      text:"You've asked Claude Code to transform variable names from snake_case to camelCase across a module. After three attempts with increasingly detailed prose descriptions, Claude Code keeps applying the transformation inconsistently — some variables get transformed, others don't, using different rules each time. What should you do?",
+      options:["Provide 3 concrete input/output examples: 'user_name → userName, api_key → apiKey, http_url → httpUrl' — the model generalises from examples more reliably than from prose descriptions","Rewrite the prose description one more time with even more explicit instructions","Increase the model temperature to get more creative transformation approaches","Switch to a larger model that is better at following detailed instructions"],
+      correct:0,
+      explanation:"When prose descriptions produce inconsistent results after multiple attempts, switch modalities — don't rewrite the prose. Concrete input/output examples show the model exactly the transformation pattern. 2-3 examples eliminate ambiguity that prose admits and enable reliable generalisation to novel variable names. Rewriting prose (B) produces different misinterpretations, not fewer. Temperature (C) controls randomness, not consistency. The problem isn't model capability (D) — it's the communication modality."
+    },
+    {
+      scenario:"Session Context",
+      text:"Your CI pipeline has Claude Code generate code for a feature, then immediately review that same code for bugs. The review consistently misses subtle issues. An independent human reviewer catches several bugs Claude Code missed. What architectural change would most improve review quality?",
+      options:["Use a fresh, independent Claude Code session (without prior code generation context) for the review step","Increase the number of review iterations — have Claude Code review its own output multiple times","Add detailed review criteria to the system prompt so Claude Code knows what to look for","Use a larger model for the review step to improve reasoning quality"],
+      correct:0,
+      explanation:"The model that generated the code retains its reasoning context — it's less likely to question its own decisions (motivated reasoning). An independent review instance without that prior context approaches the code fresh and catches issues the generator missed. This is why multi-pass review architectures with independent instances outperform self-review instructions. More iterations of the same biased reviewer (B) compounds the problem. Criteria and model size (C, D) don't address the fundamental context bias."
+    },
+    {
+      scenario:"Claude Code Configuration",
+      text:"A skill runs correctly but developers on the team want to run a personalised variant with stricter analysis rules without affecting their teammates' version. What is the correct approach?",
+      options:["Create a personal skill in <code>~/.claude/skills/strict-review/SKILL.md</code> with a different name — personal location, personal customisation, no impact on shared project skill","Edit the project skill in .claude/skills/ to add the stricter rules — it will apply to everyone consistently","Create a personal CLAUDE.md in ~/.claude/ that overrides the team skill's instructions","Fork the team repository to maintain a personal version with stricter settings"],
+      correct:0,
+      explanation:"Personal customisation of a team skill: create a personal variant in ~/.claude/skills/ with a different name. Personal location (not git-tracked), different name (doesn't override the team skill), zero impact on teammates. Editing the project skill (B) changes it for everyone — this is the wrong approach for personal customisation. Personal CLAUDE.md (C) affects all Claude Code interactions, not just this skill. Forking the repo (D) is extreme and disconnects you from team updates."
+    }
+  ]
+},
+{
+  id:4, name:"Prompt Engineering & Structured Output", weight:20, color:"#d97706", light:"#fffbeb", icon:"fa-pen-nib",
+  studyGuide:{
+    globalRules:[
+      "Explicit categorical criteria beat vague confidence instructions. 'Flag only when described behavior contradicts actual code' is specific. 'Be conservative' changes nothing.",
+      "tool_use guarantees JSON syntax correctness, NOT semantic correctness. Values in wrong fields, sums that don't add up — these require validation-retry loops.",
+      "Independent review instances beat self-review. The model that generated code is biased toward its own decisions. A fresh instance without prior context catches more."
+    ],
+    concepts:[
+      {term:'Explicit Categorical Criteria', def:'Specify exactly which issue types to flag (bugs, security) vs. skip (style, local patterns). Beats "be conservative" every time.'},
+      {term:'Few-Shot for Ambiguous Cases', def:'2-4 targeted examples demonstrating handling of borderline scenarios. Model generalises judgment to novel inputs.'},
+      {term:'tool_use for Structured Output', def:'Most reliable mechanism for schema-compliant output. Eliminates JSON syntax errors. Does NOT prevent semantic errors.'},
+      {term:'tool_choice: "any"', def:'Guarantees the model calls at least one tool. Use when structured output is required and tool_choice: "auto" occasionally returns prose.'},
+      {term:'Nullable Fields', def:'Make fields optional/nullable when the information may not exist in source documents. Prevents hallucination of values.'},
+      {term:'Validation-Retry Loop', def:'Send failed extraction + specific validation errors as a follow-up request. Effective for format/structural errors, NOT for absent information.'},
+      {term:'Retry Ineffective When', def:'The required information is simply absent from the source document. Retrying cannot create information that doesn\'t exist.'},
+      {term:'Message Batches API', def:'50% cost savings, up to 24-hour processing window, no guaranteed latency SLA. Use custom_id for correlation.'},
+      {term:'Batch API Limitation', def:'Does NOT support multi-turn tool calling. Cannot execute tools mid-request. Unsuitable for agentic workflows.'},
+      {term:'Multi-Pass Review', def:'Per-file local analysis passes + separate cross-file integration pass. Avoids attention dilution from processing many files simultaneously.'},
+      {term:'Attention Dilution', def:'Processing many files together leads to inconsistent depth, missed bugs, contradictory findings. Fix: split into focused passes.'},
+      {term:'Self-Review Limitation', def:'Generator retains reasoning context, less likely to question own decisions. Use independent instances for review.'},
+    ],
+    traps:[
+      '"Be conservative" or "only report high-confidence findings" do NOT reduce false positives — they give the model no decision rule. Use categorical criteria.',
+      'tool_use enforces schema STRUCTURE, not semantic CORRECTNESS. Still need validation-retry for wrong-field values and calculation errors.',
+      'Retry loops are INEFFECTIVE when the information is absent from the source — you cannot extract what isn\'t there.',
+      'Batch API has no latency SLA — it is NEVER appropriate for blocking workflows (pre-merge checks, real-time support).',
+      'Larger context windows do NOT fix attention dilution — multi-pass architecture is the solution.',
+      'Self-review with the same session is NOT equivalent to independent review — the generator has motivated reasoning bias.'
+    ],
+    mnemonic:`<strong>CLEAR</strong> — prompt engineering for reliability:
+• <strong>C</strong>ategorical criteria (explicit include/exclude, not "be conservative")
+• <strong>L</strong>imit false positives with few-shot examples for ambiguous cases
+• <strong>E</strong>nforce structure via tool_use + nullable fields for optional data
+• <strong>A</strong>dd retry-with-error-feedback for semantic validation failures
+• <strong>R</strong>oute to batch for latency-tolerant workloads only
+
+<strong>"Few-shot demonstrates judgment; instructions only describe rules."</strong>`
+  },
+  questions:[
+    {
+      scenario:"Customer Support Agent",
+      official:true,
+      text:"Your customer support agent achieves 55% first-contact resolution, well below the 80% target. Logs show it escalates straightforward cases (standard damage replacements with photo evidence) while attempting to autonomously handle complex situations requiring policy exceptions. What's the most effective improvement?",
+      options:["Add explicit escalation criteria to your system prompt with few-shot examples demonstrating when to escalate versus resolve autonomously","Have the agent self-report a confidence score (1-10) and automatically route to humans when confidence falls below a threshold","Deploy a separate classifier model trained on historical tickets to predict which requests need escalation before the main agent processes them","Implement sentiment analysis to detect customer frustration and automatically escalate when negative sentiment exceeds a threshold"],
+      correct:0,
+      explanation:"Explicit escalation criteria with few-shot examples directly addresses the root cause: unclear decision boundaries. The few-shot examples demonstrate judgment on borderline cases the model can generalise from. Option B fails because LLM self-reported confidence is poorly calibrated — the agent is already incorrectly confident on hard cases. Option C is over-engineered when prompt optimisation hasn't been tried. Option D solves the wrong problem — sentiment doesn't correlate with case complexity."
+    },
+    {
+      scenario:"Claude Code for CI/CD",
+      official:true,
+      text:"Your team wants to reduce API costs. Currently real-time Claude calls power: (1) a blocking pre-merge check that must complete before developers can merge, and (2) a technical debt report generated overnight for review the next morning. Management proposes switching both to the Message Batches API for 50% cost savings. How should you evaluate this?",
+      options:["Use batch processing for the technical debt reports only; keep real-time calls for pre-merge checks","Switch both workflows to batch processing with status polling to check for completion","Keep real-time calls for both workflows to avoid batch result ordering issues","Switch both to batch with a timeout fallback to real-time if batches take too long"],
+      correct:0,
+      explanation:"The Message Batches API offers 50% cost savings but has processing times up to 24 hours with no guaranteed latency SLA — unsuitable for blocking pre-merge checks where developers wait for results, but ideal for overnight technical debt reports. Option B is wrong because 'often faster' completion isn't acceptable for blocking workflows. Option C reflects a misconception — batch results can be correlated using custom_id fields. Option D adds unnecessary complexity when the simpler answer is matching each API to its use case."
+    },
+    {
+      scenario:"Claude Code for CI/CD",
+      official:true,
+      text:"A pull request modifies 14 files across the stock tracking module. Your single-pass review of all files together produces: detailed feedback for some files, superficial comments for others, obvious bugs missed, and contradictory feedback — flagging a pattern as problematic in one file while approving the identical pattern elsewhere. How should you restructure the review?",
+      options:["Split into focused passes: analyze each file individually for local issues, then run a separate integration-focused pass examining cross-file data flow","Require developers to split large PRs into smaller submissions of 3-4 files before automated review runs","Switch to a higher-tier model with a larger context window to give all 14 files adequate attention in one pass","Run three independent review passes on the full PR and only flag issues that appear in at least two of the three runs"],
+      correct:0,
+      explanation:"Splitting into focused passes directly addresses attention dilution — the root cause of inconsistent depth and contradictory findings. File-by-file analysis ensures consistent depth; the integration pass catches cross-file issues. Option B shifts burden to developers without improving the review architecture. Option C misunderstands that larger context windows don't solve attention quality — dilution is about competing signals, not window size. Option D would suppress real bugs by requiring consensus on issues caught intermittently."
+    },
+    {
+      scenario:"Structured Data Extraction",
+      text:"Your code review CI system flags 35% of its findings as style concerns — inconsistent naming, spacing preferences, local pattern variations — that developers consistently dismiss. This is eroding trust in the genuine 65% of bugs and security issues. What is the single most effective change to reduce this false positive rate?",
+      options:["Define explicit categorical criteria: specify which issue types to flag (security vulnerabilities, logic bugs, null pointer risks) vs. skip (style preferences, naming that matches existing local patterns, formatting)","Instruct Claude to 'only report high-confidence findings' and 'be conservative in flagging issues'","Add examples of correct code so Claude can better recognise acceptable patterns","Lower the overall review sensitivity to reduce total output volume"],
+      correct:0,
+      explanation:"Explicit categorical criteria — defining which categories to flag vs. skip — directly address the false positive problem. 'Flag security vulnerabilities and logic bugs, skip style preferences and patterns that match existing local code' gives the model a clear decision rule. 'Be conservative' (B) sounds helpful but gives no actionable rule — the model doesn't know WHICH findings to conserve about. Code examples (C) help recognise patterns but don't solve the categorisation problem. Volume reduction (D) suppresses true positives along with false ones."
+    },
+    {
+      scenario:"Structured Data Extraction",
+      text:"You're designing a JSON schema for invoice extraction. The field <code>purchase_order_number</code> exists on only ~40% of invoices. How should this field be designed in the schema?",
+      options:["Make the field optional and nullable — the model returns null for invoices where the field is absent, rather than hallucinating a value","Make it required with a default value of 'N/A' to ensure the field is always present in output","Include the field only in a separate schema variant for invoices with PO numbers","Add 'if information is unavailable, write unknown' to the extraction instructions"],
+      correct:0,
+      explanation:"Optional/nullable fields allow the model to accurately represent absent information with null. Required fields pressure the model to provide a value — even when the information doesn't exist in the source document — leading to hallucination. This is one of the most important schema design principles for extraction accuracy. 'N/A' defaults (B) are fabricated values. A separate schema (C) adds complexity and requires knowing the invoice type upfront. Instruction-based defaults (D) are probabilistic and inconsistently applied."
+    },
+    {
+      scenario:"Structured Data Extraction",
+      text:"Your extraction pipeline uses <code>tool_use</code> with a strict JSON schema. Output is always syntactically valid JSON. However, you notice that extracted invoice line items frequently don't sum to the stated total, and dates are sometimes placed in the wrong fields. What additional mechanism is needed?",
+      options:["A validation-retry loop that appends specific semantic validation errors to a follow-up request — prompting the model to self-correct the wrong-field placements and calculation discrepancies","Switch to a larger model — the current model lacks the reasoning capacity for complex invoices","Add 'double-check that line items sum to the total' to the system prompt","Use a stricter JSON schema with additional constraints to prevent semantic errors"],
+      correct:0,
+      explanation:"tool_use with strict schema eliminates JSON SYNTAX errors — it does NOT prevent semantic errors (values in wrong fields, calculations that don't add up). Validation-retry loops address semantic errors by including the failed extraction and specific validation errors in a follow-up request, guiding the model toward self-correction. A larger model (B) won't help if the schema doesn't catch semantic issues. System prompt instructions (C) are probabilistic. Stricter schema syntax (D) only validates structure, not semantic correctness."
+    },
+    {
+      scenario:"Structured Data Extraction",
+      text:"Your validation-retry loop sends failed extractions back with specific error messages, but a subset of documents consistently fail even after 3 retry attempts. Analysis shows these documents genuinely don't contain the required field information. What should you do?",
+      options:["Mark these documents as requiring human review — retries are ineffective when the required information is simply absent from the source document","Increase the retry limit to 5 or 10 attempts — more retries improve extraction accuracy","Add more detailed instructions explaining what the field should contain if it's not explicitly stated","Use a higher-capability model for these difficult documents"],
+      correct:0,
+      explanation:"Retries are effective for format mismatches and structural errors — the model has the information but expressed it incorrectly. Retries are ineffective when the required information is absent from the source document — no amount of retrying can extract information that doesn't exist. These documents belong in a human review queue. More retries (B) waste API calls. Better instructions (C) and better models (D) can't fabricate absent information."
+    },
+    {
+      scenario:"CI/CD Pipeline",
+      text:"Your CI pipeline runs 50,000 document classifications per day. Each classification uses the same 3,000-token system prompt with a 200-token document. You need to reduce API costs while maintaining real-time classification — results are needed within 5 seconds. Which approach is most cost-effective?",
+      options:["Use prompt caching on the stable 3,000-token system prompt — cached tokens cost ~10% of normal price, saving ~90% on repeated static content","Switch to the Message Batches API for 50% cost savings","Reduce the system prompt to under 500 tokens to minimize token usage per call","Cache results of previous classifications and return cached results for similar documents"],
+      correct:0,
+      explanation:"Prompt caching on the static 3,000-token system prompt reduces cost to ~10% of normal for those tokens — ~90% savings on the bulk of each call. At 50,000 calls/day × 3,000 cached tokens = 150M tokens saved daily. Real-time response (5-second SLA) rules out the Batches API (B), which has no latency SLA and up to 24-hour processing. Truncating the system prompt (C) risks degrading classification quality. Result caching (D) doesn't help for new/unique documents."
+    },
+    {
+      scenario:"Prompt Engineering",
+      text:"A few-shot example strategy for a code review tool should include which type of example to be most effective at reducing false positives?",
+      options:["A borderline pattern that COULD be a bug but is actually an acceptable local convention — with the reasoning for skipping it, demonstrating how to resolve ambiguity","An obviously critical bug being correctly flagged as HIGH severity","An obviously clean, correct function being correctly approved","Multiple examples of the same bug type to reinforce recognition of that pattern"],
+      correct:0,
+      explanation:"Few-shot examples provide maximum value for AMBIGUOUS CASES — the borderline patterns where the model needs guidance on how to resolve uncertainty. An example showing a suspicious-looking pattern that's actually acceptable (with explicit reasoning) teaches the model to apply that judgment to novel ambiguous cases. Obvious bugs (B) and clean code (C) the model already handles correctly — these examples add tokens without improving decision-making. Multiple examples of the same bug type (D) don't address the ambiguous case problem."
+    },
+    {
+      scenario:"Structured Data Extraction",
+      text:"You have an extraction pipeline processing 200 different document types. You're unsure which extraction schema is most appropriate for each incoming document. You need to guarantee the model always performs extraction (not returning conversational text) while letting it adapt to the document type. What is the correct tool_choice configuration?",
+      options:['tool_choice: "any" — guarantees the model calls at least one tool (but can choose which), allowing adaptation to document type while ensuring structured output','tool_choice: "auto" — the model will recognise it should perform extraction and naturally call the right tool','Forced selection to a single generic extraction tool that handles all 200 document types','System prompt instruction: "Always use one of the extraction tools for every document"'],
+      correct:0,
+      explanation:"tool_choice: 'any' guarantees the model must call at least one tool — ensuring structured output — while allowing it to choose the most appropriate tool from the available extraction schemas. This is exactly the right configuration when you need guaranteed tool use but want the model to select among multiple valid tool options based on document context. tool_choice: 'auto' (B) allows the model to return plain text instead — not guaranteed. Forced selection (C) prevents adaptation. System prompt instructions (D) are probabilistic."
+    }
+  ]
+},
+{
+  id:5, name:"Context Management & Reliability", weight:15, color:"#dc2626", light:"#fef2f2", icon:"fa-shield-halved",
+  studyGuide:{
+    globalRules:[
+      "Persistent fact blocks survive summarization. Specific values ($247.83, order #45892, 'Friday') must be extracted into a verbatim block outside the summarized history — not inside it.",
+      "Escalate on gaps, not guesses. Policy silence on a specific situation = escalation trigger. Self-reported confidence = unreliable. Explicit human requests = honor immediately, no exceptions.",
+      "Errors need structured context, not silence. Generic 'unavailable' hides recovery options. Suppress errors as empty success = prevent recovery. Either: structure the error for the coordinator."
+    ],
+    concepts:[
+      {term:'Case Facts Block', def:'Persistent structured data (amounts, dates, order IDs, customer-stated expectations) maintained separately from summarized conversation history. Preserved verbatim.'},
+      {term:'Lost-in-the-Middle Effect', def:'Models process info at the beginning and end of long inputs more reliably than the middle. Place key findings at the beginning of aggregated inputs.'},
+      {term:'Tool Result Accumulation', def:'Tool outputs grow in context disproportionately to relevance. 40+ fields from a lookup when only 5 are needed wastes substantial context.'},
+      {term:'Progressive Summarization Risk', def:'Condensing "$247.83 by Friday for order #45892" into "the customer wants a refund soon" destroys precision needed for accurate resolution.'},
+      {term:'Escalation Triggers', def:'(1) Customer explicitly requests human — honor IMMEDIATELY. (2) Policy gap or ambiguity. (3) Unable to make meaningful progress.'},
+      {term:'Structured Error Context', def:'Include: failure type, attempted query, partial results, potential alternative approaches. Enables coordinator intelligent recovery decisions.'},
+      {term:'Error Suppression Anti-Pattern', def:'Catching failures and returning empty success prevents coordinator from detecting problems. Use isError: true with structured context instead.'},
+      {term:'Claim-Source Mappings', def:'Structured output linking claim → evidence excerpt → source URL → publication date. Preserved through synthesis pipeline for attribution.'},
+      {term:'Context Degradation', def:'In extended sessions, model starts referencing "typical patterns" instead of specific earlier findings. Scratchpad files and subagent delegation are the fix.'},
+      {term:'Scratchpad Files', def:'Files agents write to persist key findings across context boundaries when context fills with verbose exploration output.'},
+      {term:'Structured State Manifests', def:'Agent state exported to known file location for crash recovery. Coordinator loads manifest on resume, injects state into agent prompts.'},
+      {term:'Conflict Annotation', def:'When two credible sources report conflicting statistics — annotate both with source attribution, flag as contested. Do not pick one arbitrarily.'}
+    ],
+    traps:[
+      "Progressive summarization destroys precision — 'customer wants a refund' vs '$247.83 refund on order #45892 by Friday'",
+      "Explicit customer request for a human must be honored IMMEDIATELY — not after an autonomous resolution attempt",
+      "Policy silence on a specific situation is an ESCALATION TRIGGER, not a license for best-guess judgment",
+      "Generic 'search unavailable' error hides whether to retry, use alternatives, or proceed with partial results",
+      "Suppressing errors (returning empty success) prevents the coordinator from making recovery decisions",
+      "Two credible sources disagree → annotate both, flag as contested — don't average and don't pick the more recent one",
+      "Context degradation signal: model references 'typical patterns' instead of specific earlier findings — use scratchpad files"
+    ],
+    mnemonic:`<strong>SPACE</strong> — Context Management pillars:
+• <strong>S</strong>tructured errors (failure type + partial results + alternatives)
+• <strong>P</strong>osition matters (key findings at beginning, not middle)
+• <strong>A</strong>ccumulation trimmed (only relevant fields enter context)
+• <strong>C</strong>laims mapped to sources (provenance through pipeline)
+• <strong>E</strong>scalate on gaps (policy silence → escalate, not guess)
+
+<strong>"Suppress errors = suppress recovery. Structure them instead."</strong>`
+  },
+  questions:[
+    {
+      scenario:"Multi-Agent Research System",
+      official:true,
+      text:"The web search subagent times out while researching a complex topic. You need to design how this failure information flows back to the coordinator agent. Which error propagation approach best enables intelligent recovery?",
+      options:["Return structured error context to the coordinator including the failure type, the attempted query, any partial results, and potential alternative approaches","Implement automatic retry logic with exponential backoff within the subagent, returning a generic 'search unavailable' status only after all retries are exhausted","Catch the timeout within the subagent and return an empty result set marked as successful","Propagate the timeout exception directly to a top-level handler that terminates the entire research workflow"],
+      correct:0,
+      explanation:"Structured error context gives the coordinator the information needed to make intelligent recovery decisions — whether to retry with modified query, try an alternative source, or proceed with partial results. Option B's generic status hides context the coordinator needs. Option C suppresses the error by marking failure as success, preventing any recovery and risking incomplete outputs. Option D terminates the entire workflow unnecessarily when recovery strategies could succeed."
+    },
+    {
+      scenario:"Customer Support Agent",
+      text:"Your multi-turn customer support agent processes a complex return case over 12 turns. Tool results from multiple <code>lookup_order</code> calls accumulate in context — each returns 40+ fields but only 6-8 are relevant to the return eligibility question. The agent is hitting context limits prematurely. What is the most targeted fix?",
+      options:["Trim verbose tool outputs to only retain the return-relevant fields (order_id, status, purchase_date, items, amount, eligibility) before they accumulate in context","Summarize the entire conversation into a single paragraph every 5 turns to reduce total context size","Use the extended context version of the model to handle the larger context window","Clear the conversation history after 8 turns and start fresh with a summary system prompt"],
+      correct:0,
+      explanation:"Trimming tool outputs to relevant fields is the most targeted and efficient optimization. Tool results accumulate and consume tokens disproportionately to their relevance — 40+ fields when only 6-8 matter wastes substantial context. This directly addresses the root cause. Paragraph summarization (B) risks losing precision in key details. Extended context (C) treats the symptom rather than fixing the inefficiency. Clearing history (D) loses critical case context."
+    },
+    {
+      scenario:"Customer Support Agent",
+      text:"During a 15-turn customer support conversation, the agent creates a running summary to manage context. The summary reads: 'Customer has a delivery issue and wants compensation.' However, the original conversation contains: 'Package for order #45892 shows delivered but not received. Customer says they need it by Friday for a wedding. Requesting $23.50 refund or express reship.' What is the risk?",
+      options:["Progressive summarization destroys high-precision tokens — the specific order number, deadline, amount, and context for urgency are lost and cannot be recovered from the vague summary","The summary is too short — a longer summary would preserve more details","The model may become confused by the mix of prose and structured data","No risk — the model can reconstruct specific details from the conversation history when needed"],
+      correct:0,
+      explanation:"Progressive summarization destroys precision. '$23.50 refund for order #45892, needed by Friday for a wedding' contains critical specifics (exact amount, order ID, hard deadline with context) that become unrecoverable once summarized to 'wants compensation for delivery issue.' The fix is a persistent case facts block maintained separately from summarized history — extracting key transactional facts verbatim outside the summarization process."
+    },
+    {
+      scenario:"Customer Support Agent",
+      text:"A customer says: 'I've been trying to resolve this for three days. I'm very frustrated. I just want to speak with a real person.' The issue — a standard damaged item return — is within the agent's capability to resolve in one turn. What should the agent do?",
+      options:["Escalate immediately to a human agent — explicit customer requests for human contact must be honored immediately, without first attempting autonomous resolution","Attempt to resolve the return autonomously since it's within capability, then offer human transfer if the customer remains dissatisfied","Acknowledge the frustration and ask if the customer would like the issue resolved quickly by the automated system first","Explain that a human agent will have the same resolution options and ask if the customer would like to proceed automatically"],
+      correct:0,
+      explanation:"Explicit customer requests for a human agent must be honored IMMEDIATELY — this is a non-negotiable escalation trigger regardless of case complexity or the agent's capability. Attempting autonomous resolution after being explicitly told not to (B, C, D) violates customer autonomy and compounds frustration. The correct response: acknowledge the request, compile a complete handoff summary (customer ID, issue, what was tried), and escalate."
+    },
+    {
+      scenario:"Customer Support Agent",
+      text:"Your return policy document clearly covers same-store price adjustments. A customer requests a price match to a competitor's lower price. The policy document is completely silent on competitor price matching. What should the agent do?",
+      options:["Escalate to a human agent — policy silence or ambiguity on a customer's specific situation is an escalation trigger, not a license for best-guess judgment","Apply the closest applicable policy (same-store price adjustment rules) as the most relevant precedent","Deny the request with explanation that competitor price matching isn't mentioned in policy","Offer a compromise amount that splits the difference between the listed and competitor price"],
+      correct:0,
+      explanation:"Policy gaps and ambiguity are explicit escalation triggers. When the policy is silent on the customer's specific situation (competitor matching when policy only addresses same-store adjustments), the agent escalates rather than improvises. Applying closest precedent (B) commits the company to unapproved obligations. Denial (C) may be incorrect — the company might offer competitor matching, the policy just doesn't address it. Compromise amounts (D) are unsupported decisions."
+    },
+    {
+      scenario:"Multi-Agent Research System",
+      text:"Your research pipeline's synthesis agent receives findings from web search and document analysis agents in prose summary format. The final report contains accurate claims but no source citations. Users can't verify where information came from. What is the root cause and fix?",
+      options:["The context-passing format collapses attribution — require subagents to output structured claim-source mappings (claim, evidence_excerpt, source_url, publication_date) that the synthesis agent preserves when combining findings","The synthesis agent's system prompt lacks instructions to include citations","The web search agent's tool results don't include source URLs","Add a post-processing step that re-queries sources to reconstruct citations after synthesis"],
+      correct:0,
+      explanation:"Source attribution is lost in the compression step when subagents return prose summaries. The fix is upstream: require structured claim-source mappings in subagent outputs — each finding includes claim, evidence excerpt, source URL, and publication date. The synthesis agent can then preserve and merge these mappings when combining findings. Synthesis prompt instructions (B) can't cite sources that were never passed to it. Re-querying (D) is fragile and expensive. Source URLs in raw tool results (C) are lost when those results are summarized."
+    },
+    {
+      scenario:"Multi-Agent Research System",
+      text:"Two credible academic sources in your research pipeline report conflicting AI adoption statistics: Source A (MIT, 2024) reports 34%, Source B (Stanford, 2024) reports 41%. Both are peer-reviewed and recent. How should the synthesis agent handle this?",
+      options:["Annotate both values with source attribution and flag the conflict explicitly — allow the report to present both figures with context rather than arbitrarily selecting one","Select the more authoritative source (MIT > Stanford in this field) and use that statistic","Average the two values (37.5%) for a balanced estimate that acknowledges uncertainty","Exclude the field from the report since the data is unreliable when sources disagree"],
+      correct:0,
+      explanation:"Conflicting statistics from credible sources should be annotated with attribution and flagged as contested — the synthesis agent shouldn't make editorial judgments about which source is more reliable. That determination belongs to the human reader. Averaging (C) misrepresents both sources. Selection (B) introduces arbitrary editorial bias. Exclusion (D) removes valid data. Note: temporal differences (different data collection periods) should also be annotated to enable correct interpretation."
+    },
+    {
+      scenario:"Multi-Agent Research System",
+      text:"During a long codebase exploration session, the coordinator agent begins referencing 'typical ORM patterns' and 'standard service structures' instead of the specific classes and relationships it analyzed 30 turns ago. Responses are becoming generic. What is happening and what should you do?",
+      options:["Context degradation from accumulated verbose discovery output — spawn subagents to isolate exploration phases, use scratchpad files to persist specific findings, and use /compact to reduce context usage","The model has reached its knowledge cutoff and needs to be restarted with a fresh session","The system prompt is too long — trim it to create room for the specific findings","The coordinator needs better instructions about maintaining specificity in its responses"],
+      correct:0,
+      explanation:"Context degradation occurs in extended sessions when verbose discovery output accumulates, pushing earlier specific findings out of effective attention range. The multi-pronged solution: (1) spawn subagents to isolate verbose exploration phases, keeping main context clean, (2) use scratchpad files to persist key findings across context boundaries, (3) use /compact to reduce context when it fills with verbose output. Restarting (B) loses all progress. Trimming the system prompt (C) removes instructions, not the accumulated discovery output causing the problem."
+    },
+    {
+      scenario:"Structured Data Extraction",
+      text:"Your extraction pipeline achieves 97% overall accuracy across 10,000 invoices. Management wants to reduce human review to 3%. Before doing so, what validation step is most critical?",
+      options:["Validate accuracy by document type and field — a 97% aggregate may mask 80% accuracy on a specific document type or field, which would fail if those are routed to auto-processing","Confirm that the 97% accuracy holds on the most recent 1,000 documents to check for drift","Ensure the 3% error rate is distributed evenly across all invoices for fair sampling","Check that the validation test set is large enough (at least 1,000 samples) for statistical significance"],
+      correct:0,
+      explanation:"Aggregate accuracy masks segment-level failures. A 97% overall rate could mean 80% accuracy on international invoices, or 75% accuracy on the 'tax_exempt_amount' field — which would be unacceptable if those are routed to auto-processing. Validate accuracy by document type AND by field before reducing human review. Recent accuracy (B) catches drift but doesn't catch segment problems. Even distribution (C) and sample size (D) are secondary concerns to segment-level validation."
+    },
+    {
+      scenario:"Customer Support Agent",
+      text:"After a system restart, your multi-agent customer support pipeline needs to resume processing a complex multi-issue ticket that was being handled when the crash occurred. Two of five investigation subagents had completed their analysis. What mechanism enables efficient resumption without re-running completed work?",
+      options:["Structured state manifests — each completed subagent exports its findings and state to a known file location; the coordinator loads this manifest on restart and injects completed findings directly into the remaining agents' prompts","Use --resume with the session name to continue exactly where processing stopped","Restart the entire pipeline — completed work may have been affected by the crash and should be re-validated","Store the conversation history in a database for automatic restoration on restart"],
+      correct:0,
+      explanation:"Structured state manifests allow crash recovery without re-running expensive completed work. Each subagent exports its state (completed findings, confidence scores, what was attempted) to a known file location. On resume, the coordinator loads the manifest and injects the already-completed findings directly into the remaining agents' prompts as initial context. --resume (B) works for conversational context but may have stale tool results. Full restart (C) wastes the completed analysis. DB conversation history (D) doesn't capture structured agent state."
+    }
+  ]
+}
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+const state = {
+  mode: 'start',           // start | study | quiz | review | final
+  dIdx: 0,                 // current domain index
+  qIdx: 0,                 // current question index within domain
+  selected: null,          // selected option index
+  showExpl: false,
+  answers: DOMAINS.map(d => Array(d.questions.length).fill(null)),
+  studyTab: 0,
+  expandedMissed: new Set(),
+};
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const $ = (sel) => document.querySelector(sel);
+function domainColor(i) { return DOMAINS[i].color; }
+function pct(correct, total) { return total ? Math.round(correct/total*100) : 0; }
+function scaledScore(raw_pct) { return Math.round(100 + (raw_pct/100)*900); }
+
+function totalStats() {
+  let correct = 0, total = 0;
+  DOMAINS.forEach((d,di) => {
+    d.questions.forEach((q,qi) => {
+      total++;
+      if (state.answers[di][qi] === q.correct) correct++;
+    });
+  });
+  return { correct, total, pct: pct(correct,total) };
+}
+
+function domainStats(di) {
+  const d = DOMAINS[di];
+  let correct = 0;
+  d.questions.forEach((q,qi) => {
+    if (state.answers[di][qi] === q.correct) correct++;
+  });
+  return { correct, total: d.questions.length, pct: pct(correct, d.questions.length) };
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function render() {
+  const app = document.getElementById('app');
+  if (state.mode === 'start') app.innerHTML = renderStart();
+  else if (state.mode === 'study') app.innerHTML = renderStudy();
+  else if (state.mode === 'quiz') app.innerHTML = renderQuiz();
+  else if (state.mode === 'review') app.innerHTML = renderReview();
+  else if (state.mode === 'final') app.innerHTML = renderFinal();
+  attachHandlers();
+}
+
+// ── START ────────────────────────────────────────────────────────────────────
+function renderStart() {
+  const dCards = DOMAINS.map((d,i) => `
+    <div class="domain-card" style="background:${d.light};border-color:${d.color}22;color:${d.color}" onclick="jumpToStudy(${i})">
+      <div class="icon"><i class="fas ${d.icon}"></i></div>
+      <div class="name">${d.name}</div>
+      <div class="weight" style="color:${d.color}">${d.weight}%</div>
+    </div>`).join('');
+  return `
+    <div class="screen">
+      <div class="hero">
+        <div class="badge"><i class="fas fa-certificate"></i> Claude Certified Architect — Foundations</div>
+        <h1>Practice Exam</h1>
+        <p>Scenario-based questions · 5 domains · Passing score 720/1000</p>
+      </div>
+      <div class="card">
+        <div class="domain-grid">${dCards}</div>
+        <div class="start-actions">
+          <button class="btn btn-primary" onclick="startExam()"><i class="fas fa-play"></i> Start Full Exam</button>
+          <button class="btn btn-outline" onclick="jumpToStudy(0)"><i class="fas fa-book-open"></i> Study Domains First</button>
+        </div>
+      </div>
+      <div class="info-bar">
+        <span class="info-item"><i class="fas fa-layer-group"></i> 5 domains</span>
+        <span class="info-item"><i class="fas fa-star"></i> 12 official sample Qs</span>
+        <span class="info-item"><i class="fas fa-trophy"></i> Pass: 720/1000</span>
+      </div>
+    </div>`;
+}
+
+function jumpToStudy(i) { state.dIdx = i; state.mode = 'study'; state.studyTab = 0; render(); }
+function startExam() { state.dIdx = 0; state.mode = 'study'; state.studyTab = 0; render(); }
+
+// ── STUDY GUIDE ──────────────────────────────────────────────────────────────
+function renderStudy() {
+  const d = DOMAINS[state.dIdx];
+  const sg = d.studyGuide;
+  const tabs = ['Key Concepts','Exam Traps','Framework'];
+
+  const conceptCards = sg.concepts.map(c => `
+    <div class="concept-card" style="border-left-color:${d.color}">
+      <div class="term" style="color:${d.color}">${c.term}</div>
+      <div class="def">${c.def}</div>
+    </div>`).join('');
+
+  const trapItems = sg.traps.map(t => `<li>${t}</li>`).join('');
+
+  const rulesHtml = (sg.globalRules||[]).map((r,i) => `
+    <div class="rule-box">
+      <div class="rule-label" style="color:${d.color}">Rule ${i+1}</div>
+      ${r}
+    </div>`).join('');
+
+  const tabContents = [
+    `<div class="concept-grid">${conceptCards}</div>`,
+    `<ul class="trap-list">${trapItems}</ul>`,
+    `${rulesHtml}<div class="mnemonic-box">${sg.mnemonic}</div>`
+  ];
+
+  const tabHtml = tabs.map((t,i) => `<button class="tab${state.studyTab===i?' active':''}" onclick="setStudyTab(${i})">${t}</button>`).join('');
+  const contentHtml = tabContents.map((c,i) => `<div class="tab-content${state.studyTab===i?' active':''}">${c}</div>`).join('');
+
+  const domNav = DOMAINS.map((dd,i) => `<button class="btn btn-sm${i===state.dIdx?' btn-primary':' btn-ghost'}" style="${i===state.dIdx?`background:${d.color};`:''}" onclick="jumpToStudy(${i})">${i+1}</button>`).join('');
+
+  return `
+    <div class="progress-header">
+      <div class="progress-label">Domain ${state.dIdx+1}/5</div>
+      <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:${(state.dIdx/5)*100}%;background:${d.color}"></div></div>
+      <div style="display:flex;gap:4px">${domNav}</div>
+    </div>
+    <div class="screen">
+      <div class="study-header" style="background:linear-gradient(135deg,${d.color},${d.color}cc)">
+        <div style="display:flex;align-items:center;gap:12px">
+          <i class="fas ${d.icon}" style="font-size:24px;opacity:.9"></i>
+          <div>
+            <h2>${d.name}</h2>
+            <p>${d.weight}% of exam · ${d.questions.length} practice questions</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="tabs">${tabHtml}</div>
+        ${contentHtml}
+      </div>
+      <div style="margin-top:20px;display:flex;justify-content:space-between;align-items:center">
+        ${state.dIdx > 0 ? `<button class="btn btn-outline btn-sm" onclick="jumpToStudy(${state.dIdx-1})"><i class="fas fa-arrow-left"></i> Previous Domain</button>` : '<span></span>'}
+        <button class="btn btn-primary" onclick="startDomainQuiz()">
+          Start ${d.name.split(' ')[0]} Quiz <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>`;
+}
+
+function setStudyTab(i) { state.studyTab = i; render(); }
+function startDomainQuiz() { state.qIdx = 0; state.selected = null; state.showExpl = false; state.mode = 'quiz'; render(); }
+
+// ── QUIZ ─────────────────────────────────────────────────────────────────────
+function renderQuiz() {
+  const d = DOMAINS[state.dIdx];
+  const q = d.questions[state.qIdx];
+  const totalQ = d.questions.length;
+  const progPct = ((state.qIdx) / totalQ) * 100;
+
+  const optionsHtml = q.options.map((opt,i) => {
+    let cls = 'option';
+    if (state.showExpl) {
+      if (i === q.correct) cls += ' correct';
+      else if (i === state.selected) cls += ' wrong';
+      else cls += ' dimmed';
+    }
+    return `<button class="option ${cls}" onclick="selectOption(${i})" ${state.showExpl?'disabled':''}>
+      <span class="option-letter">${String.fromCharCode(65+i)}</span>
+      <span class="option-text">${opt}</span>
+    </button>`;
+  }).join('');
+
+  const explHtml = state.showExpl ? `
+    <div class="explanation ${state.selected===q.correct?'correct':'wrong'}">
+      <div class="expl-label">
+        <i class="fas ${state.selected===q.correct?'fa-circle-check':'fa-circle-xmark'}"></i>
+        ${state.selected===q.correct?'Correct!':'Incorrect — Correct answer: '+String.fromCharCode(65+q.correct)}
+      </div>
+      ${q.explanation}
+    </div>
+    <div class="next-btn-row">
+      <button class="btn btn-primary" onclick="nextQuestion()">
+        ${state.qIdx+1 < totalQ ? 'Next Question <i class="fas fa-arrow-right"></i>' : 'See Domain Results <i class="fas fa-chart-bar"></i>'}
+      </button>
+    </div>` : '';
+
+  return `
+    <div class="progress-header">
+      <div class="progress-label" style="color:${d.color}">Domain ${state.dIdx+1}</div>
+      <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:${progPct}%;background:${d.color}"></div></div>
+      <div class="progress-label" style="text-align:right">Q${state.qIdx+1}/${totalQ}</div>
+    </div>
+    <div class="screen">
+      <div class="card">
+        <div class="question-header">
+          <div class="scenario-tag">
+            <span style="background:${d.light};color:${d.color};padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700">${d.name}</span>
+            <span style="color:#a1a1aa">·</span>
+            <span>${q.scenario}</span>
+            ${q.official?'<span class="official-tag">★ Official Sample Q</span>':''}
+          </div>
+          <div class="question-text">${q.text}</div>
+        </div>
+        <div class="options">${optionsHtml}</div>
+        ${explHtml}
+      </div>
+      <div style="margin-top:12px;display:flex;justify-content:center">
+        <button class="btn btn-ghost btn-sm" onclick="exitToStudy()"><i class="fas fa-book"></i> Back to Study Guide</button>
+      </div>
+    </div>`;
+}
+
+function selectOption(i) {
+  if (state.showExpl) return;
+  state.selected = i;
+  state.answers[state.dIdx][state.qIdx] = i;
+  state.showExpl = true;
+  render();
+  document.querySelector('.explanation')?.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function nextQuestion() {
+  const d = DOMAINS[state.dIdx];
+  if (state.qIdx + 1 < d.questions.length) {
+    state.qIdx++;
+    state.selected = null;
+    state.showExpl = false;
+    render();
+    window.scrollTo({top:0,behavior:'smooth'});
+  } else {
+    state.mode = 'review';
+    render();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+
+function exitToStudy() { state.mode = 'study'; state.studyTab = 0; render(); }
+
+// ── DOMAIN REVIEW ────────────────────────────────────────────────────────────
+function renderReview() {
+  const d = DOMAINS[state.dIdx];
+  const stats = domainStats(state.dIdx);
+  const p = stats.pct;
+  const circleClass = p >= 80 ? 'pass' : p >= 60 ? 'ok' : 'fail';
+
+  const missedHtml = d.questions.map((q,qi) => {
+    const ans = state.answers[state.dIdx][qi];
+    if (ans === q.correct) return '';
+    const expanded = state.expandedMissed.has(`${state.dIdx}-${qi}`);
+    return `
+      <div class="missed-item">
+        <div class="missed-header" onclick="toggleMissed('${state.dIdx}-${qi}')">
+          <span class="missed-icon"><i class="fas fa-circle-xmark"></i></span>
+          <span class="missed-q">Q${qi+1}: ${q.text.replace(/<[^>]+>/g,'').substring(0,90)}…</span>
+          <i class="fas fa-chevron-${expanded?'up':'down'}" style="color:#a1a1aa;flex-shrink:0"></i>
+        </div>
+        <div class="missed-body${expanded?' open':''}">
+          <div class="missed-correct">Correct: ${String.fromCharCode(65+q.correct)} — ${q.options[q.correct].replace(/<[^>]+>/g,'')}</div>
+          ${ans !== null ? `<div style="margin-bottom:8px;font-size:12px;color:#dc2626">Your answer: ${String.fromCharCode(65+ans)} — ${q.options[ans].replace(/<[^>]+>/g,'')}</div>` : ''}
+          <div class="missed-expl">${q.explanation}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  const allCorrect = d.questions.map((q,qi) => state.answers[state.dIdx][qi] === q.correct);
+  const scoreRow = d.questions.map((q,qi) => {
+    const ok = state.answers[state.dIdx][qi] === q.correct;
+    return `<span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:${ok?'#dcfce7':'#fee2e2'};color:${ok?'#16a34a':'#dc2626'};font-size:11px;font-weight:700;margin:2px">${qi+1}</span>`;
+  }).join('');
+
+  const isLast = state.dIdx === DOMAINS.length - 1;
+
+  return `
+    <div class="screen">
+      <div class="score-summary" style="background:linear-gradient(135deg,${DOMAINS[state.dIdx].color}15,${DOMAINS[state.dIdx].color}08);border:1px solid ${DOMAINS[state.dIdx].color}22">
+        <div class="score-circle ${circleClass}">
+          <span class="sc-pct">${p}%</span>
+          <span class="sc-label">${stats.correct}/${stats.total}</span>
+        </div>
+        <div class="score-info">
+          <h3>${d.name}</h3>
+          <p>${p>=80?'Strong performance!':p>=60?'Passing range — review missed questions':'Below target — revisit the study guide'}</p>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:16px">
+        <div style="font-size:12px;font-weight:600;color:#71717a;margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em">Question Results</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">${scoreRow}</div>
+      </div>
+      ${missedHtml ? `<div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:12px;color:#dc2626"><i class="fas fa-circle-xmark"></i> Missed Questions (${d.questions.length - stats.correct})</div><div class="missed-list">${missedHtml}</div></div>` : `<div class="card" style="text-align:center;color:#16a34a;font-weight:700;padding:32px"><i class="fas fa-trophy" style="font-size:32px;display:block;margin-bottom:8px"></i>Perfect score on this domain!</div>`}
+      <div style="margin-top:20px;display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap">
+        <button class="btn btn-outline btn-sm" onclick="retakeDomain()"><i class="fas fa-rotate-left"></i> Retake Domain</button>
+        <button class="btn btn-primary" onclick="nextDomain()">
+          ${isLast ? '<i class="fas fa-flag-checkered"></i> Final Results' : 'Next Domain <i class="fas fa-arrow-right"></i>'}
+        </button>
+      </div>
+    </div>`;
+}
+
+function toggleMissed(key) {
+  if (state.expandedMissed.has(key)) state.expandedMissed.delete(key);
+  else state.expandedMissed.add(key);
+  render();
+}
+
+function retakeDomain() {
+  state.answers[state.dIdx] = Array(DOMAINS[state.dIdx].questions.length).fill(null);
+  state.qIdx = 0; state.selected = null; state.showExpl = false;
+  state.mode = 'study'; state.studyTab = 0; render();
+}
+
+function nextDomain() {
+  if (state.dIdx < DOMAINS.length - 1) {
+    state.dIdx++;
+    state.qIdx = 0; state.selected = null; state.showExpl = false;
+    state.mode = 'study'; state.studyTab = 0;
+  } else {
+    state.mode = 'final';
+  }
+  render(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── FINAL RESULTS ────────────────────────────────────────────────────────────
+function renderFinal() {
+  const total = totalStats();
+  const scaled = scaledScore(total.pct);
+  const passed = scaled >= PASS_SCALED;
+
+  // SVG ring
+  const r = 80, cx = 100, cy = 100, circ = 2*Math.PI*r;
+  const offset = circ * (1 - total.pct/100);
+  const ringColor = passed ? '#16a34a' : total.pct >= 60 ? '#d97706' : '#dc2626';
+  const ring = `<svg width="200" height="200" viewBox="0 0 200 200">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#27272a" stroke-width="14"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${ringColor}" stroke-width="14"
+      stroke-dasharray="${circ}" stroke-dashoffset="${offset}" stroke-linecap="round"
+      transform="rotate(-90 ${cx} ${cy})" style="transition:stroke-dashoffset 1s"/>
+    <text x="${cx}" y="${cy-10}" text-anchor="middle" font-size="32" font-weight="800" fill="#fff">${total.pct}%</text>
+    <text x="${cx}" y="${cy+16}" text-anchor="middle" font-size="14" fill="#a1a1aa">${total.correct}/${total.total} correct</text>
+    <text x="${cx}" y="${cy+36}" text-anchor="middle" font-size="13" font-weight="700" fill="${ringColor}">${scaled}/1000</text>
+  </svg>`;
+
+  const domBars = DOMAINS.map((d,i) => {
+    const s = domainStats(i);
+    const barColor = s.pct>=80?'#16a34a':s.pct>=60?'#d97706':'#dc2626';
+    return `<div class="dbar">
+      <div class="dbar-label" title="${d.name}">${d.name.split(' ').slice(0,2).join(' ')}</div>
+      <div class="dbar-track"><div class="dbar-fill" style="width:${s.pct}%;background:${barColor}"></div></div>
+      <div class="dbar-pct" style="color:${barColor}">${s.pct}%</div>
+    </div>`;
+  }).join('');
+
+  // All missed across all domains
+  let allMissed = '';
+  DOMAINS.forEach((d,di) => {
+    const domMissed = d.questions.map((q,qi) => {
+      if (state.answers[di][qi] === q.correct) return '';
+      const expanded = state.expandedMissed.has(`${di}-${qi}`);
+      return `<div class="missed-item">
+        <div class="missed-header" onclick="toggleMissed('${di}-${qi}')">
+          <span class="missed-icon"><i class="fas fa-circle-xmark"></i></span>
+          <span class="missed-q">Q${qi+1}: ${q.text.replace(/<[^>]+>/g,'').substring(0,85)}…</span>
+          <i class="fas fa-chevron-${expanded?'up':'down'}" style="color:#a1a1aa;flex-shrink:0"></i>
+        </div>
+        <div class="missed-body${expanded?' open':''}">
+          <div class="missed-correct">Correct: ${String.fromCharCode(65+q.correct)} — ${q.options[q.correct].replace(/<[^>]+>/g,'')}</div>
+          <div class="missed-expl">${q.explanation}</div>
+        </div>
+      </div>`;
+    }).join('');
+    if (domMissed.trim()) {
+      allMissed += `<div class="missed-domain-section"><h4 style="color:${d.color}"><i class="fas ${d.icon}"></i> ${d.name}</h4><div class="missed-list">${domMissed}</div></div>`;
+    }
+  });
+
+  return `
+    <div class="screen screen-wide">
+      <div class="final-ring-wrap">
+        ${ring}
+        <h2>${passed?'Exam Passed!':'Not Quite There Yet'}</h2>
+        <p>${passed?'You met the 720/1000 passing threshold.':'The passing score is 720/1000. Keep studying!'}</p>
+        <span class="pass-badge ${passed?'pass':'fail'}">
+          <i class="fas ${passed?'fa-circle-check':'fa-circle-xmark'}"></i>
+          ${scaled}/1000 scaled score — ${passed?'PASS':'FAIL'}
+        </span>
+      </div>
+      <div class="card" style="margin-bottom:16px">
+        <div style="font-size:12px;font-weight:600;color:#71717a;margin-bottom:14px;text-transform:uppercase;letter-spacing:.04em">Domain Breakdown</div>
+        <div class="domain-bars">${domBars}</div>
+      </div>
+      ${allMissed ? `<div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:16px;color:#dc2626"><i class="fas fa-book-open"></i> Review Missed Questions</div>${allMissed}</div>` : '<div class="card" style="text-align:center;padding:32px;color:#16a34a;font-weight:700"><i class="fas fa-trophy" style="font-size:40px;display:block;margin-bottom:8px"></i>Perfect score — all questions correct!</div>'}
+      <div class="final-actions">
+        <button class="btn btn-primary" onclick="restartExam()"><i class="fas fa-rotate-left"></i> Restart Exam</button>
+        <button class="btn btn-outline" onclick="jumpToStudy(0)"><i class="fas fa-book-open"></i> Review Study Guides</button>
+      </div>
+    </div>`;
+}
+
+function restartExam() {
+  state.mode = 'start';
+  state.dIdx = 0; state.qIdx = 0;
+  state.selected = null; state.showExpl = false;
+  state.answers = DOMAINS.map(d => Array(d.questions.length).fill(null));
+  state.expandedMissed = new Set();
+  render(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─── EVENT DELEGATION ────────────────────────────────────────────────────────
+function attachHandlers() { /* inline onclick handles everything */ }
+
+// ─── BOOT ────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
