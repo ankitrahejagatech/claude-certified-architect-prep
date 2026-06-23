@@ -8,6 +8,22 @@ Pass score: **720 / 1000.** Scenario-based. Tests architectural judgment under p
 
 ---
 
+## Why AI PMs should get this cert
+
+Most AI PMs can describe what a model does. Few can specify how an agent system should behave when a tool call fails, when context runs out, or when a subagent goes off-track. This exam tests exactly that gap.
+
+What you'll actually be able to do after passing:
+
+1. **Write specs engineers don't have to translate.** You'll know the difference between a hooks-enforced constraint and a prompt-based one - and which one to specify for a given risk level.
+2. **Debug production failures faster.** When an agent misbehaves, you'll know whether to look at stop_reason handling, context isolation, or tool description quality - instead of waiting for eng to explain it.
+3. **Make better build-vs-configure calls.** MCP vs custom tool, `tool_choice: any` vs `auto`, project-level vs user-level config - these are PM decisions disguised as engineering ones.
+4. **Evaluate AI vendors without getting played.** You'll recognize when a vendor is describing probabilistic behavior (prompts) as if it were guaranteed behavior (hooks).
+5. **Hold your ground in technical design reviews.** Knowing the architecture means you can push back when a proposed design is fragile - not just defer to the team.
+
+The cert takes a day to prep if you use this kit. The signal it sends is disproportionate to the effort.
+
+---
+
 ## What's in here
 
 ```
